@@ -2,7 +2,7 @@ import React from "react"
 import { useDispatch, useSelector } from "react-redux"
 import styled from "styled-components"
 import { RootState } from "../app/RootReducer"
-import { addRow, removeRow } from "../features/sheet/SheetSlice"
+import { addRow, editRow, removeRow } from "../features/sheet/SheetSlice"
 import { DataEntry } from "../Types"
 import Editable from "./Editable"
 
@@ -34,7 +34,7 @@ type SheetProps = {
     schema: SchemaEntry[]
     data: DataEntry[]
     onEntryRemove: (index: number) => void
-    onEntryChange: (index: number, value: string) => void
+    onEntryChange: (index: number, key: string, value: string) => void
 }
 const Sheet = ({ schema, data, onEntryRemove, onEntryChange }: SheetProps) => {
     return (
@@ -61,7 +61,11 @@ const Sheet = ({ schema, data, onEntryRemove, onEntryChange }: SheetProps) => {
                                     }
                                     placeholder="stuff"
                                     onChange={(value) =>
-                                        onEntryChange(index, value)
+                                        onEntryChange(
+                                            index,
+                                            shemaEntry.id,
+                                            value
+                                        )
                                     }
                                 />
                             </td>
@@ -90,8 +94,14 @@ const ViewContainer = () => {
         dispatch(removeRow(index))
     }
 
-    const handleChange = (index: number, value: string) => {
-        console.log(index, value)
+    const handleChange = (index: number, key: string, value: string) => {
+        dispatch(
+            editRow({
+                index,
+                key,
+                value,
+            })
+        )
     }
 
     if (!sheetData) {

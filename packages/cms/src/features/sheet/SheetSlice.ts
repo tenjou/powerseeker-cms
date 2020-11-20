@@ -1,6 +1,12 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { DataEntry } from "../../Types"
 
+export type SheetRowEdit = {
+    index: number
+    key: string
+    value: string
+}
+
 type SheetInitialState = {
     data: DataEntry[]
 }
@@ -35,6 +41,12 @@ const slice = createSlice({
         removeRow(state, action: PayloadAction<number>) {
             state.data.splice(action.payload, 1)
         },
+
+        editRow(state, action: PayloadAction<SheetRowEdit>) {
+            const entry = state.data[action.payload.index]
+            const key = action.payload.key as keyof DataEntry
+            entry[key] = action.payload.value
+        },
     },
 })
 
@@ -46,6 +58,6 @@ const createDataEntry = (): DataEntry => {
     }
 }
 
-export const { load, addRow, removeRow } = slice.actions
+export const { load, addRow, removeRow, editRow } = slice.actions
 
 export default slice.reducer
