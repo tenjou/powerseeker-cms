@@ -4,6 +4,7 @@ import styled from "styled-components"
 import { RootState } from "../app/RootReducer"
 import { addRow, removeRow } from "../features/sheet/SheetSlice"
 import { DataEntry } from "../Types"
+import Editable from "./Editable"
 
 type SchemaEntry = {
     id: string
@@ -33,8 +34,9 @@ type SheetProps = {
     schema: SchemaEntry[]
     data: DataEntry[]
     onEntryRemove: (index: number) => void
+    onEntryChange: (index: number, value: string) => void
 }
-const Sheet = ({ schema, data, onEntryRemove }: SheetProps) => {
+const Sheet = ({ schema, data, onEntryRemove, onEntryChange }: SheetProps) => {
     return (
         <table>
             <thead>
@@ -51,7 +53,17 @@ const Sheet = ({ schema, data, onEntryRemove }: SheetProps) => {
                     <tr key={"tr" + dataEntry.id}>
                         {schema.map((shemaEntry) => (
                             <td key={shemaEntry.id}>
-                                {dataEntry[shemaEntry.id as keyof DataEntry]}
+                                <Editable
+                                    text={
+                                        dataEntry[
+                                            shemaEntry.id as keyof DataEntry
+                                        ]
+                                    }
+                                    placeholder="stuff"
+                                    onChange={(value) =>
+                                        onEntryChange(index, value)
+                                    }
+                                />
                             </td>
                         ))}
                         <td>
@@ -78,6 +90,10 @@ const ViewContainer = () => {
         dispatch(removeRow(index))
     }
 
+    const handleChange = (index: number, value: string) => {
+        console.log(index, value)
+    }
+
     if (!sheetData) {
         return <h1>No sheet data</h1>
     }
@@ -89,6 +105,7 @@ const ViewContainer = () => {
                 schema={schema}
                 data={sheetData}
                 onEntryRemove={handleRemove}
+                onEntryChange={handleChange}
             />
         </ViewContainerBody>
     )
