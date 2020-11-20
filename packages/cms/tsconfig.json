@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "module": "CommonJS",
+        "outDir": "./public",
+        "moduleResolution": "node",
+        "jsx": "react",
+        "esModuleInterop": true,
+        "allowJs": true,
+        "strict": true
+    }
+}
