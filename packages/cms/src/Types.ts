@@ -3,3 +3,9 @@ export type DataEntry = {
     name: unknown
     level: unknown
 }
+
+export type ProjectAsset = {
+    id: string
+    name: string
+    data: Record<string, ProjectAsset>
+}

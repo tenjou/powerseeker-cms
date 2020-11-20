@@ -5,6 +5,7 @@ import NavBar from "../components/NavBar"
 import ViewContainer from "../components/ViewContainer"
 import "./style.css"
 import * as SheetSlice from "../features/sheet/SheetSlice"
+import * as ProjectSlice from "../features/project/ProjectSlice"
 import { useDispatch } from "react-redux"
 
 const Vertical = styled.div`
@@ -24,6 +25,7 @@ const App = () => {
 
     useEffect(() => {
         dispatch(SheetSlice.load())
+        dispatch(ProjectSlice.load())
     }, [])
 
     return (
