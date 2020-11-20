@@ -8,14 +8,14 @@ export type ClipboardEventEx<T> = React.ClipboardEvent<T> & {
     }
 }
 
-export default function Editable({
-    text,
+export default function Editable<T>({
+    value,
     placeholder,
     onChange,
 }: {
-    text: string | number
+    value: T
     placeholder: string
-    onChange: (text: string) => void
+    onChange: (value: string) => void
 }) {
     const ref = createRef<HTMLDivElement>()
     const [editable, setEditable] = useState(false)
@@ -73,7 +73,7 @@ export default function Editable({
         }
     }
 
-    const showText = editable ? text : text ? text : placeholder
+    const showText = editable ? `${value}` : value ? `${value}` : placeholder
     let style = ""
 
     return (

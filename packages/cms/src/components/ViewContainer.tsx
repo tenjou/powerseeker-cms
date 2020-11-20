@@ -54,7 +54,7 @@ const Sheet = ({ schema, data, onEntryRemove, onEntryChange }: SheetProps) => {
                         {schema.map((shemaEntry) => (
                             <td key={shemaEntry.id}>
                                 <Editable
-                                    text={
+                                    value={
                                         dataEntry[
                                             shemaEntry.id as keyof DataEntry
                                         ]
