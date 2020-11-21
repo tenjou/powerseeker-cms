@@ -19,10 +19,6 @@ type LeftPanelProps = {
 const LeftPanel = ({ assets }: LeftPanelProps) => {
     const dispatch = useDispatch()
 
-    const handleCreateAsset = () => {
-        dispatch(ProjectSlice.createAsset())
-    }
-
     const handleRemoveAsset = (assetId: string) => {
         dispatch(ProjectSlice.removeAsset(assetId))
     }
@@ -31,13 +27,20 @@ const LeftPanel = ({ assets }: LeftPanelProps) => {
         dispatch(State.selectAsset(assetId))
     }
 
+    const assetsIds = Object.keys(assets)
+    if (assetsIds.length === 0) {
+        return (
+            <LeftPanelBody>
+                <LeftPanelHeader />
+                <Centered>No assets created</Centered>
+            </LeftPanelBody>
+        )
+    }
+
     return (
         <LeftPanelBody>
-            <div>
-                <span>Assets</span>
-                <button onClick={handleCreateAsset}>+</button>
-            </div>
-            {Object.keys(assets).map((assetId) => (
+            <LeftPanelHeader />
+            {assetsIds.map((assetId) => (
                 <div key={assetId}>
                     <button onClick={() => handleClick(assetId)}>
                         {assets[assetId].name}
@@ -50,5 +53,27 @@ const LeftPanel = ({ assets }: LeftPanelProps) => {
         </LeftPanelBody>
     )
 }
+
+const LeftPanelHeader = () => {
+    const dispatch = useDispatch()
+
+    const handleCreateAsset = () => {
+        dispatch(ProjectSlice.createAsset())
+    }
+
+    return (
+        <div>
+            <span>Assets</span>
+            <button onClick={handleCreateAsset}>+</button>
+        </div>
+    )
+}
+
+const Centered = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+`
 
 export default LeftPanel
