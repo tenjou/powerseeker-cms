@@ -23,6 +23,10 @@ const LeftPanel = ({ assets }: LeftPanelProps) => {
         dispatch(ProjectSlice.createAsset())
     }
 
+    const handleRemoveAsset = (assetId: string) => {
+        dispatch(ProjectSlice.removeAsset(assetId))
+    }
+
     const handleClick = (assetId: string) => {
         dispatch(State.selectAsset(assetId))
     }
@@ -37,6 +41,9 @@ const LeftPanel = ({ assets }: LeftPanelProps) => {
                 <div key={assetId}>
                     <button onClick={() => handleClick(assetId)}>
                         {assets[assetId].name}
+                    </button>
+                    <button onClick={() => handleRemoveAsset(assetId)}>
+                        Remove
                     </button>
                 </div>
             ))}
