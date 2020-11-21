@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../../app/RootReducer"
 import { AppDispatch } from "../../app/Store"
-import { ProjectAsset, AssetItem } from "../../Types"
+import { ProjectAsset, AssetItem, Project } from "../../Types"
 import { uuid4 } from "./../../Utils"
 
 type AssetItemIndex = {
@@ -19,18 +19,9 @@ type AssetItemValue = AssetItemIndex & {
     value: unknown
 }
 
-type InitialState = {
+const initialState: Project = {
     meta: {
-        id: string | null
-        name: string
-        createdAt: number
-        updatedAt: number
-    }
-    data: Record<string, ProjectAsset>
-}
-const initialState: InitialState = {
-    meta: {
-        id: null,
+        id: "",
         name: "",
         createdAt: 0,
         updatedAt: 0,
@@ -53,30 +44,29 @@ const projectSlice = createSlice({
     initialState,
     reducers: {
         load(state) {
-            const createdAt = Date.now()
-            const assetA = createAsset("1", "assetA")
-            addItem(assetA, {
-                id: uuid4(),
-                name: "monster_a",
-                level: 1,
-            })
-            addItem(assetA, {
-                id: uuid4(),
-                name: "monster_b",
-                level: 5,
-            })
-            const assetB = createAsset("2", "assetB")
-
-            state.meta = {
-                id: uuid4(),
-                name: "Project",
-                createdAt,
-                updatedAt: createdAt,
-            }
-            state.data = {
-                [assetA.id]: assetA,
-                [assetB.id]: assetB,
-            }
+            // const createdAt = Date.now()
+            // const assetA = createAsset("1", "assetA")
+            // addItem(assetA, {
+            //     id: uuid4(),
+            //     name: "monster_a",
+            //     level: 1,
+            // })
+            // addItem(assetA, {
+            //     id: uuid4(),
+            //     name: "monster_b",
+            //     level: 5,
+            // })
+            // const assetB = createAsset("2", "assetB")
+            // state.meta = {
+            //     id: uuid4(),
+            //     name: "Project",
+            //     createdAt,
+            //     updatedAt: createdAt,
+            // }
+            // state.data = {
+            //     [assetA.id]: assetA,
+            //     [assetB.id]: assetB,
+            // }
         },
 
         addRow(state, action: PayloadAction<AddAssetItem>) {
@@ -98,6 +88,11 @@ const projectSlice = createSlice({
 })
 
 export const { load } = projectSlice.actions
+
+export const createProject = () => (
+    dispatch: AppDispatch,
+    getState: () => RootState
+) => {}
 
 export const addRow = () => (
     dispatch: AppDispatch,

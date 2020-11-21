@@ -11,6 +11,11 @@ type Schema = {
     }
 }
 
+type SchemaInput = {
+    id: string
+    schema: Schema
+}
+
 const initialState: Record<string, Schema> = {}
 
 const schemaSlice = createSlice({
@@ -33,11 +38,6 @@ export const create = (id: string, schema: Schema) => (
             schema,
         })
     )
-}
-
-type SchemaInput = {
-    id: string
-    schema: Schema
 }
 
 export default schemaSlice.reducer

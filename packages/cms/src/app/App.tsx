@@ -5,6 +5,7 @@ import styled from "styled-components"
 import LeftPanel from "../components/LeftPanel"
 import NavBar from "../components/NavBar"
 import ViewContainer from "../components/ViewContainer"
+import Projects from "../features/projects/Projects"
 import * as ProjectSlice from "../features/project/ProjectSlice"
 import { selectAsset } from "./../features/state/StateSlice"
 import { RootState } from "./RootReducer"
@@ -21,10 +22,6 @@ const Horizontal = styled.div`
     flex-direction: row;
     flex: 1;
 `
-
-const Projects = () => {
-    return <h1>Projects</h1>
-}
 
 type TProjectParams = {
     assetId?: string | undefined
@@ -52,17 +49,6 @@ const Page404 = () => {
 }
 
 const App = () => {
-    const dispatch = useDispatch()
-    const project = useSelector((state: RootState) => state.project)
-
-    useEffect(() => {
-        dispatch(ProjectSlice.load())
-    }, [])
-
-    if (!project.meta.id) {
-        return null
-    }
-
     return (
         <Switch>
             <Route path="/project/:assetId?" component={Project} />
