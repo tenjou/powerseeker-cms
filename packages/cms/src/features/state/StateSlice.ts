@@ -25,6 +25,10 @@ export const selectAsset = (assetId: string) => (
     dispatch: AppDispatch,
     getState: () => RootState
 ) => {
+    if (!assetId) {
+        return
+    }
+
     const assets = getState().project.data
     if (!assets[assetId]) {
         console.warn(`Invalid assetId: "${assetId}"`)

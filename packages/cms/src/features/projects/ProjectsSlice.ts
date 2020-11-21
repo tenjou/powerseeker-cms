@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../../app/RootReducer"
 import { AppDispatch } from "../../app/Store"
 import { Project } from "../../Types"
-import { uuid4 } from "../../Utils"
+import { createProjectFileId, uuid4 } from "../../Utils"
 
 type ProjectRenameInput = {
     projectId: string
@@ -156,7 +156,5 @@ export const rename = (projectId: string, name: string) => (
     )
     dispatch(save(projectId))
 }
-
-const createProjectFileId = (id: string) => `@${id}`
 
 export default projectsSlice.reducer

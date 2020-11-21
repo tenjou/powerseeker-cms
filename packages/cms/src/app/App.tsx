@@ -8,7 +8,6 @@ import ViewContainer from "../components/ViewContainer"
 import Projects from "../features/projects/Projects"
 import * as ProjectSlice from "../features/project/ProjectSlice"
 import { selectAsset } from "./../features/state/StateSlice"
-import { RootState } from "./RootReducer"
 import "./style.css"
 
 const Vertical = styled.div`
@@ -24,12 +23,14 @@ const Horizontal = styled.div`
 `
 
 type TProjectParams = {
+    projectId: string
     assetId?: string | undefined
 }
 const Project = ({ match }: RouteComponentProps<TProjectParams>) => {
     const dispatch = useDispatch()
 
     useEffect(() => {
+        dispatch(ProjectSlice.load(match.params.projectId))
         dispatch(selectAsset(match.params.assetId || ""))
     }, [])
 
@@ -51,7 +52,7 @@ const Page404 = () => {
 const App = () => {
     return (
         <Switch>
-            <Route path="/project/:assetId?" component={Project} />
+            <Route path="/project/:projectId/:assetId?" component={Project} />
             <Route path="/404" component={Page404} />
             <Route path="/" component={Projects} />
             <Redirect to="/404" />

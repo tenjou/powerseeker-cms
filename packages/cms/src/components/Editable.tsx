@@ -8,14 +8,18 @@ export type ClipboardEventEx<T> = React.ClipboardEvent<T> & {
     }
 }
 
+const noop = () => {}
+
 export default function Editable<T>({
     value,
     placeholder,
     onChange,
+    useRightClick = false,
 }: {
     value: T
     placeholder: string
     onChange: (value: string) => void
+    useRightClick?: boolean
 }) {
     const ref = createRef<HTMLDivElement>()
     const [editable, setEditable] = useState(false)
@@ -81,9 +85,10 @@ export default function Editable<T>({
             className={style}
             suppressContentEditableWarning={true}
             onKeyDown={handleKeyDown}
-            onClick={handleClick}
+            onClick={useRightClick ? noop : handleClick}
             onPaste={handlePaste}
             onBlur={handleBlur}
+            onContextMenu={useRightClick ? handleClick : noop}
             ref={ref}
             spellCheck={false}
         >
