@@ -52,7 +52,7 @@ export const load = () => (
         }
 
         const project = JSON.parse(json) as Project
-        projects[projectId] = project
+        projects[projectId.slice(1)] = project
     }
 
     dispatch(projectsSlice.actions.load(projects))
