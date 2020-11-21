@@ -43,6 +43,13 @@ const projectSlice = createSlice({
             state.data[action.payload.id] = action.payload
         },
 
+        removeAsset(state, action: PayloadAction<string>) {
+            if (!state) {
+                return
+            }
+            delete state.data[action.payload]
+        },
+
         addRow(state, action: PayloadAction<AddAssetItem>) {
             if (!state) {
                 return
@@ -126,6 +133,26 @@ export const createAsset = (name: string = "Untitled") => (
     dispatch(save())
 }
 
+export const removeAsset = (assetId: string) => (
+    dispatch: AppDispatch,
+    getState: () => RootState
+) => {
+    const project = getState().project
+    if (!project) {
+        console.warn(`No project has been loaded`)
+        return
+    }
+
+    const asset = project.data[assetId]
+    if (!asset) {
+        console.warn(`No such asset has been created with Id: ${assetId}`)
+        return
+    }
+
+    dispatch(projectSlice.actions.removeAsset(assetId))
+    dispatch(save())
+}
+
 export const addRow = () => (
     dispatch: AppDispatch,
     getState: () => RootState
@@ -144,7 +171,7 @@ export const addRow = () => (
 
     const asset = project.data[assetId]
     if (!asset) {
-        console.warn(`Failed toe fetch asset with Id: ${assetId}`)
+        console.warn(`No such asset has been created with Id: ${assetId}`)
         return
     }
 
