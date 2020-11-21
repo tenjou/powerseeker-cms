@@ -22,10 +22,14 @@ const Horizontal = styled.div`
     flex: 1;
 `
 
-type TParams = {
+const Projects = () => {
+    return <h1>Projects</h1>
+}
+
+type TProjectParams = {
     assetId?: string | undefined
 }
-const Project = ({ match }: RouteComponentProps<TParams>) => {
+const Project = ({ match }: RouteComponentProps<TProjectParams>) => {
     const dispatch = useDispatch()
 
     useEffect(() => {
@@ -63,7 +67,7 @@ const App = () => {
         <Switch>
             <Route path="/project/:assetId?" component={Project} />
             <Route path="/404" component={Page404} />
-            <Redirect from="/" exact to="/project" />
+            <Route path="/" component={Projects} />
             <Redirect to="/404" />
         </Switch>
     )
