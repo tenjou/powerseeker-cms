@@ -4,6 +4,11 @@ import { AppDispatch } from "../../app/Store"
 import { Project } from "../../Types"
 import { uuid4 } from "../../Utils"
 
+type ProjectRenameInput = {
+    projectId: string
+    name: string
+}
+
 const initialState: Record<string, Project> = {}
 
 const projectsSlice = createSlice({
@@ -28,6 +33,12 @@ const projectsSlice = createSlice({
 
         update(state, action: PayloadAction<Project>) {
             state[action.payload.meta.id] = action.payload
+        },
+
+        rename(state, action: PayloadAction<ProjectRenameInput>) {
+            const project = state[action.payload.projectId]
+            project.meta.name = action.payload.name
+            project.meta.updatedAt = Date.now()
         },
     },
 })
@@ -109,14 +120,41 @@ export const update = (project: Project) => (
     dispatch(projectsSlice.actions.update(project))
 }
 
-export const save = (project: Project) => (
+export const save = (projectId: string) => (
     dispatch: AppDispatch,
     getState: () => RootState
 ) => {
+    const projects = getState().projects
+    const project = projects[projectId]
+    if (!project) {
+        console.warn(`Failed to find project with Id: ${projectId}`)
+        return
+    }
+
     localStorage.setItem(
         createProjectFileId(project.meta.id),
         JSON.stringify(project)
     )
+}
+
+export const rename = (projectId: string, name: string) => (
+    dispatch: AppDispatch,
+    getState: () => RootState
+) => {
+    const projects = getState().projects
+    const project = projects[projectId]
+    if (!project) {
+        console.warn(`Failed to find project with Id: ${projectId}`)
+        return
+    }
+
+    dispatch(
+        projectsSlice.actions.rename({
+            projectId,
+            name,
+        })
+    )
+    dispatch(save(projectId))
 }
 
 const createProjectFileId = (id: string) => `@${id}`
