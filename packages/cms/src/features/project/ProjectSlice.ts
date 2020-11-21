@@ -3,6 +3,7 @@ import { RootState } from "../../app/RootReducer"
 import { AppDispatch } from "../../app/Store"
 import { ProjectAsset, AssetItem, Project } from "../../Types"
 import { createProjectFileId, uuid4 } from "./../../Utils"
+import history from "./../../app/History"
 
 type AssetItemIndex = {
     assetId: string
@@ -19,15 +20,9 @@ type AssetItemValue = AssetItemIndex & {
     value: unknown
 }
 
-const initialState: Project = {
-    meta: {
-        id: "",
-        name: "",
-        createdAt: 0,
-        updatedAt: 0,
-    },
-    data: {},
-}
+type ProjectState = Project | null
+
+const initialState: ProjectState = null as ProjectState
 
 const projectSlice = createSlice({
     name: "project",
@@ -37,17 +32,37 @@ const projectSlice = createSlice({
             return action.payload
         },
 
+        unload() {
+            return null
+        },
+
+        createAsset(state, action: PayloadAction<ProjectAsset>) {
+            if (!state) {
+                return
+            }
+            state.data[action.payload.id] = action.payload
+        },
+
         addRow(state, action: PayloadAction<AddAssetItem>) {
+            if (!state) {
+                return
+            }
             const asset = state.data[action.payload.assetId]
             asset.data.push(action.payload.data)
         },
 
         removeRow(state, action: PayloadAction<AssetItemIndex>) {
+            if (!state) {
+                return
+            }
             const asset = state.data[action.payload.assetId]
             asset.data.splice(action.payload.index, 1)
         },
 
         editRow(state, action: PayloadAction<AssetItemValue>) {
+            if (!state) {
+                return
+            }
             const asset = state.data[action.payload.assetId]
             const item = asset.data[action.payload.index]
             item[action.payload.key] = action.payload.value
@@ -62,6 +77,7 @@ export const load = (projectId: string) => (
     const json = localStorage.getItem(createProjectFileId(projectId))
     if (!json) {
         console.warn(`Failed to load project with Id: ${projectId}`)
+        history.replace("/404")
         return
     }
 
@@ -69,11 +85,69 @@ export const load = (projectId: string) => (
     dispatch(projectSlice.actions.load(project))
 }
 
+export const unload = () => (
+    dispatch: AppDispatch,
+    getState: () => RootState
+) => {
+    dispatch(projectSlice.actions.unload())
+}
+
+export const save = () => (
+    dispatch: AppDispatch,
+    getState: () => RootState
+) => {
+    const project = getState().project
+    if (!project) {
+        console.warn(`No project has been loaded yet`)
+        return
+    }
+
+    localStorage.setItem(
+        createProjectFileId(project.meta.id),
+        JSON.stringify(project)
+    )
+    console.log("(Saved)")
+}
+
+export const createAsset = (name: string = "Untitled") => (
+    dispatch: AppDispatch,
+    getState: () => RootState
+) => {
+    const createdAt = Date.now()
+    const newAsset: ProjectAsset = {
+        id: uuid4(),
+        name,
+        createdAt,
+        updatedAt: createdAt,
+        data: [],
+    }
+
+    dispatch(projectSlice.actions.createAsset(newAsset))
+    dispatch(save())
+}
+
 export const addRow = () => (
     dispatch: AppDispatch,
     getState: () => RootState
 ) => {
     const assetId = getState().state.selectedAssetId
+    if (!assetId) {
+        console.warn(`No asset has been selected`)
+        return
+    }
+
+    const project = getState().project
+    if (!project) {
+        console.warn(`No project has been loaded`)
+        return
+    }
+
+    const asset = project.data[assetId]
+    if (!asset) {
+        console.warn(`Failed toe fetch asset with Id: ${assetId}`)
+        return
+    }
+
     dispatch(
         projectSlice.actions.addRow({
             assetId,
@@ -84,6 +158,7 @@ export const addRow = () => (
             },
         })
     )
+    dispatch(save())
 }
 
 export const removeRow = (index: number) => (
@@ -97,6 +172,7 @@ export const removeRow = (index: number) => (
             index,
         })
     )
+    dispatch(save())
 }
 
 export const editRow = (index: number, key: string, value: unknown) => (
@@ -112,6 +188,7 @@ export const editRow = (index: number, key: string, value: unknown) => (
             value,
         })
     )
+    dispatch(save())
 }
 
 export default projectSlice.reducer

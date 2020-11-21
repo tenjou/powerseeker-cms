@@ -85,8 +85,8 @@ const Sheet = ({ schema, data, onEntryRemove, onEntryChange }: SheetProps) => {
 const ViewContainer = () => {
     const dispatch = useDispatch()
     const { selectedAssetId } = useSelector((state: RootState) => state.state)
-    const asset = useSelector(
-        (state: RootState) => state.project.data[selectedAssetId]
+    const asset = useSelector((state: RootState) =>
+        state.project ? state.project.data[selectedAssetId] : null
     )
 
     const handleAdd = () => {

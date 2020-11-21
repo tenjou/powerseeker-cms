@@ -1,7 +1,6 @@
 import React from "react"
-import { useSelector } from "react-redux"
 import styled from "styled-components"
-import { RootState } from "../app/RootReducer"
+import { Project } from "../Types"
 
 const NavBarBody = styled.div`
     display: flex;
@@ -11,10 +10,10 @@ const NavBarBody = styled.div`
     align-items: center;
     padding: 0 10px;
 `
-
-const NavBar = () => {
-    const project = useSelector((state: RootState) => state.project)
-
+type NavBarProps = {
+    project: Project
+}
+const NavBar = ({ project }: NavBarProps) => {
     return <NavBarBody>{project.meta.name}</NavBarBody>
 }
 

@@ -29,13 +29,18 @@ export const selectAsset = (assetId: string) => (
         return
     }
 
-    const assets = getState().project.data
-    if (!assets[assetId]) {
+    const project = getState().project
+    if (!project) {
+        console.warn(`No project has been loaded`)
+        return
+    }
+
+    if (!project.data[assetId]) {
         console.warn(`Invalid assetId: "${assetId}"`)
         return
     }
     dispatch(stateSlice.actions.selectAsset(assetId))
-    History.push(`/project/${assetId}`)
+    History.push(`/project/${project.meta.id}/${assetId}`)
 }
 
 export default stateSlice.reducer
