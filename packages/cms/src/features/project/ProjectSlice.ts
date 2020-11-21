@@ -4,7 +4,22 @@ import { AppDispatch } from "../../app/Store"
 import { ProjectAsset, AssetItem } from "../../Types"
 import { uuid4 } from "./../../Utils"
 
-type ProjectInitialState = {
+type AssetItemIndex = {
+    assetId: string
+    index: number
+}
+
+type AddAssetItem = {
+    assetId: string
+    data: AssetItem
+}
+
+type AssetItemValue = AssetItemIndex & {
+    key: string
+    value: unknown
+}
+
+type InitialState = {
     meta: {
         id: string | null
         name: string
@@ -13,8 +28,7 @@ type ProjectInitialState = {
     }
     data: Record<string, ProjectAsset>
 }
-
-const initialState: ProjectInitialState = {
+const initialState: InitialState = {
     meta: {
         id: null,
         name: "",
@@ -82,21 +96,6 @@ const projectSlice = createSlice({
         },
     },
 })
-
-type AssetItemIndex = {
-    assetId: string
-    index: number
-}
-
-type AddAssetItem = {
-    assetId: string
-    data: AssetItem
-}
-
-type AssetItemValue = AssetItemIndex & {
-    key: string
-    value: unknown
-}
 
 export const { load } = projectSlice.actions
 

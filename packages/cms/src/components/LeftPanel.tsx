@@ -1,6 +1,5 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useHistory } from "react-router-dom"
 import styled from "styled-components"
 import { RootState } from "../app/RootReducer"
 import * as State from "../features/state/StateSlice"
