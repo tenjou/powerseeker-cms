@@ -8,6 +8,7 @@ import ViewContainer from "../../components/ViewContainer"
 import { selectAsset } from "../state/StateSlice"
 import * as ProjectSlice from "./ProjectSlice"
 import { RootState } from "../../app/RootReducer"
+import { Centered } from "../../components/Common"
 
 type TProjectParams = {
     projectId: string
@@ -38,13 +39,6 @@ export default function Project({
         </Vertical>
     )
 }
-
-const Centered = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-`
 
 const Vertical = styled.div`
     display: flex;

@@ -1,6 +1,7 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
 import styled from "styled-components"
+import { Centered } from "../../components/Common"
 import { ProjectAsset } from "../../Types"
 import * as State from "../state/StateSlice"
 import * as ProjectSlice from "./ProjectSlice"
@@ -68,12 +69,5 @@ const LeftPanelHeader = () => {
         </div>
     )
 }
-
-const Centered = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-`
 
 export default LeftPanel
