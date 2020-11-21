@@ -4,6 +4,7 @@ import styled from "styled-components"
 import { RootState } from "../app/RootReducer"
 import * as Project from "../features/project/ProjectSlice"
 import { AssetItem, ProjectAsset } from "../Types"
+import { Centered } from "./Common"
 import Editable from "./Editable"
 
 type SchemaEntry = {
@@ -102,7 +103,11 @@ const ViewContainer = () => {
     }
 
     if (!asset) {
-        return <h1>No asset selected</h1>
+        return (
+            <Centered>
+                <div>No asset selected</div>
+            </Centered>
+        )
     }
 
     return (
