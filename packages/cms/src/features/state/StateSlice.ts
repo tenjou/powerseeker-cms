@@ -1,13 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../../app/RootReducer"
 import { AppDispatch } from "../../app/Store"
+import History from "./../../app/History"
 
 type InitialState = {
-    selectedAsset: string
+    selectedAssetId: string
 }
 
 const initialState: InitialState = {
-    selectedAsset: "",
+    selectedAssetId: "",
 }
 
 const stateSlice = createSlice({
@@ -15,7 +16,7 @@ const stateSlice = createSlice({
     initialState,
     reducers: {
         selectAsset(state, action: PayloadAction<string>) {
-            state.selectedAsset = action.payload
+            state.selectedAssetId = action.payload
         },
     },
 })
@@ -30,6 +31,7 @@ export const selectAsset = (assetId: string) => (
         return
     }
     dispatch(stateSlice.actions.selectAsset(assetId))
+    History.push(`/project/${assetId}`)
 }
 
 export default stateSlice.reducer

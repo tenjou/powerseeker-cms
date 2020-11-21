@@ -1,13 +1,13 @@
 import React, { useEffect } from "react"
-import { useDispatch } from "react-redux"
-import { Redirect, Route, Switch } from "react-router-dom"
+import { useDispatch, useSelector } from "react-redux"
+import { Redirect, Route, Switch, RouteComponentProps } from "react-router-dom"
 import styled from "styled-components"
 import LeftPanel from "../components/LeftPanel"
 import NavBar from "../components/NavBar"
 import ViewContainer from "../components/ViewContainer"
 import * as ProjectSlice from "../features/project/ProjectSlice"
-import * as SheetSlice from "../features/sheet/SheetSlice"
 import { selectAsset } from "./../features/state/StateSlice"
+import { RootState } from "./RootReducer"
 import "./style.css"
 
 const Vertical = styled.div`
@@ -22,7 +22,16 @@ const Horizontal = styled.div`
     flex: 1;
 `
 
-const Project = () => {
+type TParams = {
+    assetId?: string | undefined
+}
+const Project = ({ match }: RouteComponentProps<TParams>) => {
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(selectAsset(match.params.assetId || ""))
+    }, [])
+
     return (
         <Vertical>
             <NavBar />
@@ -40,16 +49,19 @@ const Page404 = () => {
 
 const App = () => {
     const dispatch = useDispatch()
+    const project = useSelector((state: RootState) => state.project)
 
     useEffect(() => {
-        dispatch(SheetSlice.load())
         dispatch(ProjectSlice.load())
-        dispatch(selectAsset("sdads"))
     }, [])
+
+    if (!project.meta.id) {
+        return null
+    }
 
     return (
         <Switch>
-            <Route path="/project" component={Project} />
+            <Route path="/project/:assetId?" component={Project} />
             <Route path="/404" component={Page404} />
             <Redirect from="/" exact to="/project" />
             <Redirect to="/404" />

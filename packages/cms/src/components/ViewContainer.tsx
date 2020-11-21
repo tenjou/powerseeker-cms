@@ -2,8 +2,8 @@ import React from "react"
 import { useDispatch, useSelector } from "react-redux"
 import styled from "styled-components"
 import { RootState } from "../app/RootReducer"
-import { addRow, editRow, removeRow } from "../features/sheet/SheetSlice"
-import { DataEntry } from "../Types"
+import * as Project from "../features/project/ProjectSlice"
+import { AssetItem, ProjectAsset } from "../Types"
 import Editable from "./Editable"
 
 type SchemaEntry = {
@@ -32,7 +32,7 @@ const ViewContainerBody = styled.div`
 
 type SheetProps = {
     schema: SchemaEntry[]
-    data: DataEntry[]
+    data: AssetItem[]
     onEntryRemove: (index: number) => void
     onEntryChange: (index: number, key: string, value: string) => void
 }
@@ -56,7 +56,7 @@ const Sheet = ({ schema, data, onEntryRemove, onEntryChange }: SheetProps) => {
                                 <Editable
                                     value={
                                         dataEntry[
-                                            shemaEntry.id as keyof DataEntry
+                                            shemaEntry.id as keyof ProjectAsset
                                         ]
                                     }
                                     placeholder="stuff"
@@ -84,28 +84,25 @@ const Sheet = ({ schema, data, onEntryRemove, onEntryChange }: SheetProps) => {
 
 const ViewContainer = () => {
     const dispatch = useDispatch()
-    const { data: sheetData } = useSelector((state: RootState) => state.sheet)
+    const { selectedAssetId } = useSelector((state: RootState) => state.state)
+    const asset = useSelector(
+        (state: RootState) => state.project.data[selectedAssetId]
+    )
 
     const handleAdd = () => {
-        dispatch(addRow())
+        dispatch(Project.addRow())
     }
 
     const handleRemove = (index: number) => {
-        dispatch(removeRow(index))
+        dispatch(Project.removeRow(index))
     }
 
     const handleChange = (index: number, key: string, value: string) => {
-        dispatch(
-            editRow({
-                index,
-                key,
-                value,
-            })
-        )
+        dispatch(Project.editRow(index, key, value))
     }
 
-    if (!sheetData) {
-        return <h1>No sheet data</h1>
+    if (!asset) {
+        return <h1>No asset selected</h1>
     }
 
     return (
@@ -113,7 +110,7 @@ const ViewContainer = () => {
             <button onClick={handleAdd}>Add</button>
             <Sheet
                 schema={schema}
-                data={sheetData}
+                data={asset.data}
                 onEntryRemove={handleRemove}
                 onEntryChange={handleChange}
             />

@@ -1,9 +1,10 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import { Provider } from "react-redux"
-import { BrowserRouter } from "react-router-dom"
+import { Router } from "react-router-dom"
 import App from "./app/App"
 import store from "./app/Store"
+import History from "./app/History"
 
 declare global {
     interface Window {
@@ -15,9 +16,9 @@ declare global {
 
 ReactDOM.render(
     <Provider store={store}>
-        <BrowserRouter>
+        <Router history={History}>
             <App />
-        </BrowserRouter>
+        </Router>
     </Provider>,
     document.getElementById("app")
 )
