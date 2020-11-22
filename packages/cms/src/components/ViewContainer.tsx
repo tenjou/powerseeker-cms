@@ -102,8 +102,8 @@ const ViewContainer = () => {
     }
 
     const handleChange = (index: number, key: string, value: string) => {
-        console.log(SchemaService.processValue(schema, key, value))
-        // dispatch(Project.editRow(index, key, value))
+        const processedValue = SchemaService.processValue(schema, key, value)
+        dispatch(Project.editRow(index, key, processedValue))
     }
 
     if (!asset) {
