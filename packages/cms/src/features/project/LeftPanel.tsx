@@ -44,7 +44,7 @@ const LeftPanel = ({ assets }: LeftPanelProps) => {
             {assetsIds.map((assetId) => (
                 <div key={assetId}>
                     <button onClick={() => handleClick(assetId)}>
-                        {assets[assetId].name}
+                        {assets[assetId].meta.name}
                     </button>
                     <button onClick={() => handleRemoveAsset(assetId)}>
                         Remove

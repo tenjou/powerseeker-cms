@@ -40,7 +40,7 @@ const projectSlice = createSlice({
             if (!state) {
                 return
             }
-            state.data[action.payload.id] = action.payload
+            state.data[action.payload.meta.id] = action.payload
         },
 
         removeAsset(state, action: PayloadAction<string>) {
@@ -122,14 +122,17 @@ export const createAsset = (name: string = "Untitled") => (
 ) => {
     const createdAt = Date.now()
     const newAsset: ProjectAsset = {
-        id: uuid4(),
-        name,
-        createdAt,
-        updatedAt: createdAt,
+        meta: {
+            id: uuid4(),
+            name,
+            createdAt,
+            updatedAt: createdAt,
+        },
         data: [],
     }
 
     dispatch(projectSlice.actions.createAsset(newAsset))
+    // dispatch(Schema.create(newAsset.meta.id))
     dispatch(save())
 }
 
@@ -153,7 +156,7 @@ export const removeAsset = (assetId: string) => (
     dispatch(save())
 }
 
-export const addRow = () => (
+export const addRow = (data: AssetItem) => (
     dispatch: AppDispatch,
     getState: () => RootState
 ) => {
@@ -178,11 +181,7 @@ export const addRow = () => (
     dispatch(
         projectSlice.actions.addRow({
             assetId,
-            data: {
-                id: uuid4(),
-                level: 1,
-                name: Date.now().toString(),
-            },
+            data,
         })
     )
     dispatch(save())
