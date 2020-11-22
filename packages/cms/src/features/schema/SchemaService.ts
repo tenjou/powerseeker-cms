@@ -42,6 +42,9 @@ const processValue = (schema: Schema, key: string, value: unknown) => {
             if (typeof value === "string") {
                 return processValueNumber(schemaItem, parseInt(value))
             }
+            if (typeof value === "number") {
+                return processValueNumber(schemaItem, value)
+            }
             console.warn(
                 `Unhandled type: ${typeof value}, for: ${schemaItem.type}`
             )
@@ -71,6 +74,9 @@ const processValue = (schema: Schema, key: string, value: unknown) => {
 }
 
 const processValueNumber = (schemaItem: SchemaItemNumber, value: number) => {
+    if (isNaN(value)) {
+        value = 0
+    }
     return Math.min(Math.max(value, schemaItem.min), schemaItem.max)
 }
 
