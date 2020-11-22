@@ -6,23 +6,25 @@ import * as Project from "../features/project/ProjectSlice"
 import { AssetItem, ProjectAsset } from "../Types"
 import { Centered } from "./Common"
 import Editable from "./Editable"
+import SchemaService from "../features/schema/SchemaService"
+import { Schema } from "../features/schema/Types"
 
-type SchemaEntry = {
-    id: string
-    type: string
-}
-const schema: SchemaEntry[] = [
+const schema: Schema = [
     {
         id: "id",
-        type: "number",
+        type: "uuid",
     },
     {
         id: "name",
         type: "string",
+        default: "name",
     },
     {
         id: "level",
         type: "number",
+        default: 1,
+        min: 1,
+        max: 99,
     },
 ]
 
@@ -32,7 +34,7 @@ const ViewContainerBody = styled.div`
 `
 
 type SheetProps = {
-    schema: SchemaEntry[]
+    schema: Schema
     data: AssetItem[]
     onEntryRemove: (index: number) => void
     onEntryChange: (index: number, key: string, value: string) => void
@@ -91,7 +93,8 @@ const ViewContainer = () => {
     )
 
     const handleAdd = () => {
-        dispatch(Project.addRow())
+        const newRow = SchemaService.createRow(schema)
+        dispatch(Project.addRow(newRow))
     }
 
     const handleRemove = (index: number) => {
@@ -99,7 +102,8 @@ const ViewContainer = () => {
     }
 
     const handleChange = (index: number, key: string, value: string) => {
-        dispatch(Project.editRow(index, key, value))
+        console.log(SchemaService.processValue(schema, key, value))
+        // dispatch(Project.editRow(index, key, value))
     }
 
     if (!asset) {
