@@ -1,10 +1,29 @@
 import React from "react"
-import { useDispatch, useSelector } from "react-redux"
+import { useDispatch } from "react-redux"
 import styled from "styled-components"
 import { Centered } from "../../components/Common"
 import { ProjectAsset } from "../../Types"
 import * as State from "../state/StateSlice"
 import * as ProjectSlice from "./ProjectSlice"
+
+// const schema: Schema = [
+//     {
+//         id: "id",
+//         type: "uuid",
+//     },
+//     {
+//         id: "name",
+//         type: "string",
+//         default: "name",
+//     },
+//     {
+//         id: "level",
+//         type: "number",
+//         default: 1,
+//         min: 1,
+//         max: 99,
+//     },
+// ]
 
 const LeftPanelBody = styled.div`
     display: flex;
@@ -59,7 +78,7 @@ const LeftPanelHeader = () => {
     const dispatch = useDispatch()
 
     const handleCreateAsset = () => {
-        dispatch(ProjectSlice.createAsset())
+        // dispatch(ProjectSlice.createAsset(schema))
     }
 
     return (

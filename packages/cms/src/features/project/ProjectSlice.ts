@@ -4,6 +4,8 @@ import { AppDispatch } from "../../app/Store"
 import { ProjectAsset, AssetItem, Project } from "../../Types"
 import { createProjectFileId, uuid4 } from "./../../Utils"
 import history from "./../../app/History"
+import { Schema } from "../schema/Types"
+import * as SchemaStore from "../schema/SchemaStore"
 
 type AssetItemIndex = {
     assetId: string
@@ -116,7 +118,7 @@ export const save = () => (
     console.log("(Saved)")
 }
 
-export const createAsset = (name: string = "Untitled") => (
+export const createAsset = (schema: Schema) => (
     dispatch: AppDispatch,
     getState: () => RootState
 ) => {
@@ -124,7 +126,7 @@ export const createAsset = (name: string = "Untitled") => (
     const newAsset: ProjectAsset = {
         meta: {
             id: uuid4(),
-            name,
+            name: "Untitled",
             createdAt,
             updatedAt: createdAt,
         },
@@ -132,7 +134,7 @@ export const createAsset = (name: string = "Untitled") => (
     }
 
     dispatch(projectSlice.actions.createAsset(newAsset))
-    // dispatch(Schema.create(newAsset.meta.id))
+    dispatch(SchemaStore.add(newAsset.meta.id, schema))
     dispatch(save())
 }
 

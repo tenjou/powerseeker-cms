@@ -1,7 +1,3 @@
-export type SchemaItem = SchemaItemType & {
-    id: string
-}
-
 export type SchemaItemUUID = { type: "uuid" }
 export type SchemaItemString = { type: "string"; default: string }
 export type SchemaItemNumber = {
@@ -16,4 +12,8 @@ export type SchemaItemType =
     | SchemaItemString
     | SchemaItemNumber
 
+export type SchemaItem = { id: string } & SchemaItemType
+
 export type Schema = SchemaItem[]
+
+export type Schemas = Record<string, Schema>

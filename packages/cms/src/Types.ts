@@ -12,6 +12,8 @@ export type ProjectAsset = {
     data: AssetItem[]
 }
 
+export type ProjectAssets = Record<string, ProjectAsset>
+
 export type Project = {
     meta: {
         id: string
@@ -19,5 +21,5 @@ export type Project = {
         createdAt: number
         updatedAt: number
     }
-    data: Record<string, ProjectAsset>
+    data: ProjectAssets
 }

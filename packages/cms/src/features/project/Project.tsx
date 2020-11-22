@@ -19,13 +19,14 @@ export default function Project({
 }: RouteComponentProps<TProjectParams>) {
     const dispatch = useDispatch()
     const project = useSelector((state: RootState) => state.project)
+    const schemas = useSelector((state: RootState) => state.schemas)
 
     useEffect(() => {
         dispatch(ProjectSlice.load(match.params.projectId))
         dispatch(selectAsset(match.params.assetId || ""))
     }, [])
 
-    if (!project) {
+    if (!project || !schemas) {
         return <Centered>Loading</Centered>
     }
 
@@ -34,7 +35,7 @@ export default function Project({
             <NavBar project={project} />
             <Horizontal>
                 <LeftPanel assets={project.data} />
-                <ViewContainer />
+                <ViewContainer assets={project.data} schemas={schemas} />
             </Horizontal>
         </Vertical>
     )

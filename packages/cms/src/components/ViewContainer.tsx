@@ -3,30 +3,11 @@ import { useDispatch, useSelector } from "react-redux"
 import styled from "styled-components"
 import { RootState } from "../app/RootReducer"
 import * as Project from "../features/project/ProjectSlice"
-import { AssetItem, ProjectAsset } from "../Types"
+import { AssetItem, ProjectAsset, ProjectAssets } from "../Types"
 import { Centered } from "./Common"
 import Editable from "./Editable"
 import SchemaService from "../features/schema/SchemaService"
-import { Schema } from "../features/schema/Types"
-
-const schema: Schema = [
-    {
-        id: "id",
-        type: "uuid",
-    },
-    {
-        id: "name",
-        type: "string",
-        default: "name",
-    },
-    {
-        id: "level",
-        type: "number",
-        default: 1,
-        min: 1,
-        max: 99,
-    },
-]
+import { Schemas, Schema } from "../features/schema/Types"
 
 const ViewContainerBody = styled.div`
     flex: 1;
@@ -85,12 +66,16 @@ const Sheet = ({ schema, data, onEntryRemove, onEntryChange }: SheetProps) => {
     )
 }
 
-const ViewContainer = () => {
+type ViewContainerProps = {
+    assets: ProjectAssets
+    schemas: Schemas
+}
+const ViewContainer = ({ assets, schemas }: ViewContainerProps) => {
     const dispatch = useDispatch()
     const { selectedAssetId } = useSelector((state: RootState) => state.state)
-    const asset = useSelector((state: RootState) =>
-        state.project ? state.project.data[selectedAssetId] : null
-    )
+
+    const asset = assets[selectedAssetId]
+    const schema = schemas[selectedAssetId]
 
     const handleAdd = () => {
         const newRow = SchemaService.createRow(schema)
@@ -106,6 +91,8 @@ const ViewContainer = () => {
         dispatch(Project.editRow(index, key, processedValue))
     }
 
+    const handleSchemaItem = () => {}
+
     if (!asset) {
         return (
             <Centered>
@@ -117,6 +104,7 @@ const ViewContainer = () => {
     return (
         <ViewContainerBody>
             <button onClick={handleAdd}>Add</button>
+            <button onClick={handleSchemaItem}>AddSchemaItem</button>
             <Sheet
                 schema={schema}
                 data={asset.data}
