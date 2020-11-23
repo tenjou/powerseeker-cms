@@ -10,7 +10,7 @@ type SchemaInput = {
 
 type InitialState = Schemas | null
 
-const initialState: InitialState = null as InitialState
+const initialState = null as InitialState
 
 const SchemaStore = createSlice({
     name: "schemas",

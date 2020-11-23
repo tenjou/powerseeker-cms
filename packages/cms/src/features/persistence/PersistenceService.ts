@@ -13,10 +13,9 @@ type ProjectSaveFile = {
     schemas: Schemas
 }
 
-const save = () => {
+const saveCurrentProject = () => {
     const project = store.getState().project
     const schemas = store.getState().schemas
-
     if (!project || !schemas) {
         console.warn(`No project is loaded`)
         return
@@ -27,9 +26,12 @@ const save = () => {
         data: project.data,
         schemas,
     }
+    save(saveFile)
+}
 
+const save = (saveFile: ProjectSaveFile) => {
     localStorage.setItem(
-        createProjectFileId(project.meta.id),
+        createProjectFileId(saveFile.meta.id),
         JSON.stringify(saveFile)
     )
 
@@ -72,7 +74,7 @@ const getProjects = () => {
 
 const createProject = (name: string) => {
     const createdAt = Date.now()
-    const project: Project = {
+    const saveFile: ProjectSaveFile = {
         meta: {
             id: uuid4(),
             name: name + "_" + Date.now(),
@@ -80,14 +82,12 @@ const createProject = (name: string) => {
             updatedAt: createdAt,
         },
         data: {},
+        schemas: {},
     }
 
-    localStorage.setItem(
-        createProjectFileId(project.meta.id),
-        JSON.stringify(project)
-    )
+    save(saveFile)
 
-    return project
+    return saveFile
 }
 
 const removeProject = (projectId: string) => {
@@ -112,7 +112,8 @@ const updated = () => {
 setInterval(() => {
     if (state.needSave) {
         state.needSave = false
-        save()
+
+        saveCurrentProject()
     }
 })
 

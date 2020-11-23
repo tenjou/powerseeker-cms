@@ -38,27 +38,28 @@ export default function Project({
             })
         )
         dispatch(SchemaStore.load(saveFile.schemas))
-        dispatch(selectAsset(match.params.assetId || ""))
+        // dispatch(selectAsset(match.params.assetId || ""))
 
-        return () => {
-            dispatch(ProjectSlice.unload())
-            dispatch(SchemaStore.unload())
-        }
+        // return () => {
+        //     dispatch(ProjectSlice.unload())
+        //     dispatch(SchemaStore.unload())
+        // }
     }, [])
 
-    if (!project || !schemas) {
-        return <Centered>Loading</Centered>
-    }
+    return <Centered>Loading</Centered>
+    // if (!project || !schemas) {
+    //     return <Centered>Loading</Centered>
+    // }
 
-    return (
-        <Vertical>
-            <NavBar project={project} />
-            <Horizontal>
-                <LeftPanel assets={project.data} />
-                <ViewContainer assets={project.data} schemas={schemas} />
-            </Horizontal>
-        </Vertical>
-    )
+    // return (
+    //     <Vertical>
+    //         <NavBar project={project} />
+    //         {/* <Horizontal>
+    //             <LeftPanel assets={project.data} />
+    //             <ViewContainer assets={project.data} schemas={schemas} />
+    //         </Horizontal> */}
+    //     </Vertical>
+    // )
 }
 
 const Vertical = styled.div`

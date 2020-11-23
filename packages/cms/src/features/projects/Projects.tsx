@@ -1,17 +1,15 @@
 import React, { useEffect } from "react"
-import { useSelector, useDispatch } from "react-redux"
-import styled from "styled-components"
+import { useSelector } from "react-redux"
 import { useHistory } from "react-router-dom"
+import styled from "styled-components"
 import { RootState } from "../../app/RootReducer"
 import Editable from "../../components/Editable"
 import { Project } from "../../Types"
-import * as ProjectsSlice from "./ProjectsStore"
+import ProjectsService from "./ProjectsService"
 
 const ProjectsHeader = () => {
-    const dispatch = useDispatch()
-
     const handleCreate = () => {
-        dispatch(ProjectsSlice.create())
+        ProjectsService.create("Untitled")
     }
 
     return (
@@ -23,16 +21,15 @@ const ProjectsHeader = () => {
 }
 
 export default function Projects() {
-    const dispatch = useDispatch()
     const history = useHistory()
     const projects = useSelector((state: RootState) => state.projects)
     const projectsIds = Object.keys(projects)
 
     useEffect(() => {
-        dispatch(ProjectsSlice.load())
+        ProjectsService.load()
 
         return () => {
-            dispatch(ProjectsSlice.unload())
+            ProjectsService.unload()
         }
     }, [])
 
@@ -41,11 +38,11 @@ export default function Projects() {
     }
 
     const handleRemove = (project: Project) => {
-        dispatch(ProjectsSlice.remove(project))
+        ProjectsService.remove(project.meta.id)
     }
 
     const handleNameChange = (projectId: string, name: string) => {
-        dispatch(ProjectsSlice.rename(projectId, name))
+        ProjectsService.rename(projectId, name)
     }
 
     if (projectsIds.length === 0) {
