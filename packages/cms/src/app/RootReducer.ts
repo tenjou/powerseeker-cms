@@ -1,13 +1,13 @@
 import { combineReducers } from "@reduxjs/toolkit"
 import { store as project } from "../features/project/ProjectStore"
 import { store as projects } from "../features/projects/ProjectsStore"
-import state from "./../features/state/StateSlice"
+import { store as cache } from "../features/cache/CacheStore"
 import { store as schemas } from "../features/schema/SchemaStore"
 
 const rootReducer = combineReducers({
     projects,
     project,
-    state,
+    cache,
     schemas,
 })
 

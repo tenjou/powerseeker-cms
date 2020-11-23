@@ -5,6 +5,7 @@ import styled from "styled-components"
 import { RootState } from "../../app/RootReducer"
 import { Centered } from "../../components/Common"
 import NavBar from "../../components/NavBar"
+import CacheService from "../cache/CacheService"
 import LeftPanel from "./LeftPanel"
 import ProjectService from "./ProjectService"
 import ViewContainer from "./ViewContainer"
@@ -21,7 +22,7 @@ export default function Project({
 
     useEffect(() => {
         ProjectService.load(match.params.projectId)
-        // dispatch(selectAsset(match.params.assetId || ""))
+        CacheService.selectAsset(match.params.assetId || "")
 
         return () => {
             ProjectService.unload()

@@ -71,7 +71,7 @@ type ViewContainerProps = {
     schemas: Schemas
 }
 const ViewContainer = ({ assets, schemas }: ViewContainerProps) => {
-    const { selectedAssetId } = useSelector((state: RootState) => state.state)
+    const { selectedAssetId } = useSelector((state: RootState) => state.cache)
 
     const asset = assets[selectedAssetId]
     const schema = schemas[selectedAssetId]

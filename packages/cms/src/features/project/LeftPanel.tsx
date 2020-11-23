@@ -1,9 +1,8 @@
 import React from "react"
-import { useDispatch } from "react-redux"
 import styled from "styled-components"
 import { Centered } from "../../components/Common"
 import { ProjectAsset } from "../../Types"
-import * as State from "../state/StateSlice"
+import CacheService from "../cache/CacheService"
 import ProjectService from "./ProjectService"
 
 const LeftPanelBody = styled.div`
@@ -18,12 +17,6 @@ type LeftPanelProps = {
     assets: Record<string, ProjectAsset>
 }
 const LeftPanel = ({ assets }: LeftPanelProps) => {
-    const dispatch = useDispatch()
-
-    const handleClick = (assetId: string) => {
-        dispatch(State.selectAsset(assetId))
-    }
-
     const assetsIds = Object.keys(assets)
     if (assetsIds.length === 0) {
         return (
@@ -39,7 +32,7 @@ const LeftPanel = ({ assets }: LeftPanelProps) => {
             <LeftPanelHeader />
             {assetsIds.map((assetId) => (
                 <div key={assetId}>
-                    <button onClick={() => handleClick(assetId)}>
+                    <button onClick={() => CacheService.selectAsset(assetId)}>
                         {assets[assetId].meta.name}
                     </button>
                     <button onClick={() => ProjectService.removeAsset(assetId)}>
