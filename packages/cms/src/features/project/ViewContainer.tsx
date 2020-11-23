@@ -68,13 +68,12 @@ const Sheet = ({ schema, data, onEntryRemove, onEntryChange }: SheetProps) => {
 
 type ViewContainerProps = {
     assets: ProjectAssets
+    assetId: string
     schemas: Schemas
 }
-const ViewContainer = ({ assets, schemas }: ViewContainerProps) => {
-    const { selectedAssetId } = useSelector((state: RootState) => state.cache)
-
-    const asset = assets[selectedAssetId]
-    const schema = schemas[selectedAssetId]
+const ViewContainer = ({ assets, assetId, schemas }: ViewContainerProps) => {
+    const asset = assets[assetId]
+    const schema = schemas[assetId]
 
     const handleAdd = () => {
         const newRow = SchemaService.createRow(schema)

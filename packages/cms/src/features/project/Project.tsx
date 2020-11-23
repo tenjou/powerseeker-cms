@@ -19,10 +19,11 @@ export default function Project({
 }: RouteComponentProps<TProjectParams>) {
     const project = useSelector((state: RootState) => state.project)
     const schemas = useSelector((state: RootState) => state.schemas)
+    const assetId = match.params.assetId || ""
 
     useEffect(() => {
         ProjectService.load(match.params.projectId)
-        CacheService.selectAsset(match.params.assetId || "")
+        CacheService.selectAsset(assetId)
 
         return () => {
             ProjectService.unload()
@@ -38,7 +39,11 @@ export default function Project({
             <NavBar project={project} />
             <Horizontal>
                 <LeftPanel assets={project.data} />
-                <ViewContainer assets={project.data} schemas={schemas} />
+                <ViewContainer
+                    assets={project.data}
+                    assetId={assetId}
+                    schemas={schemas}
+                />
             </Horizontal>
         </Vertical>
     )

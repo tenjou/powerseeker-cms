@@ -4,7 +4,6 @@ import { AssetItem, ProjectAsset } from "../../Types"
 import { uuid4 } from "../../Utils"
 import PersistenceService from "../persistence/PersistenceService"
 import SchemaService from "../schema/SchemaService"
-import { Schema } from "../schema/Types"
 import ProjectStore from "./ProjectStore"
 
 const load = (projectId: string) => {
