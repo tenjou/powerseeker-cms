@@ -61,6 +61,10 @@ export default function Editable<T>({
     const handleClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>
     ) => {
+        if (useRightClick) {
+            event.preventDefault()
+        }
+
         if (editable) {
             event.preventDefault()
             event.stopPropagation()

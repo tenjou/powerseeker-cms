@@ -73,8 +73,8 @@ export const update = (project: Project) => (
     dispatch: AppDispatch,
     getState: () => RootState
 ) => {
-    PersistenceService.updateProject(project)
     dispatch(ProjectsStore.actions.update(project))
+    PersistenceService.updateProject(project.meta.id)
 }
 
 export const rename = (projectId: string, name: string) => (
@@ -94,7 +94,7 @@ export const rename = (projectId: string, name: string) => (
             name,
         })
     )
-    PersistenceService.updateProject(project)
+    PersistenceService.updateProject(project.meta.id)
 }
 
 export default ProjectsStore.reducer

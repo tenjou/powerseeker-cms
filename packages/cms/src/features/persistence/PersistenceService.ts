@@ -94,7 +94,9 @@ const removeProject = (projectId: string) => {
     localStorage.removeItem(createProjectFileId(projectId))
 }
 
-const updateProject = (project: Project) => {
+const updateProject = (projectId: string) => {
+    const project = store.getState().projects[projectId]
+
     localStorage.setItem(
         createProjectFileId(project.meta.id),
         JSON.stringify(project)
