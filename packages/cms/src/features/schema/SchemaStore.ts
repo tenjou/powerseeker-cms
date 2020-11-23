@@ -1,6 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { RootState } from "../../app/RootReducer"
-import { AppDispatch } from "../../app/Store"
 import { Schemas, Schema } from "./Types"
 
 type SchemaInput = {
@@ -51,42 +49,3 @@ const SchemaStore = createSlice({
 export const store = SchemaStore.reducer
 
 export default SchemaStore.actions
-
-// export const { load, unload } = SchemaStore.actions
-
-// export const add = (id: string, schema: Schema) => (
-//     dispatch: AppDispatch,
-//     getState: () => RootState
-// ) => {
-//     if (!getState().schemas) {
-//         console.warn(`No schemas has been loaded`)
-//         return
-//     }
-
-//     dispatch(
-//         SchemaStore.actions.set({
-//             id,
-//             schema,
-//         })
-//     )
-// }
-
-// export const remove = (id: string) => (
-//     dispatch: AppDispatch,
-//     getState: () => RootState
-// ) => {
-//     const schemas = getState().schemas
-//     if (!schemas) {
-//         console.warn(`No schemas has been loaded`)
-//         return
-//     }
-
-//     if (!schemas[id]) {
-//         console.warn(`Failed to find schema with Id: ${id}`)
-//         return
-//     }
-
-//     dispatch(SchemaStore.actions.remove(id))
-// }
-
-// export default SchemaStore.reducer

@@ -42,7 +42,24 @@ const createAsset = () => {
 
     store.dispatch(ProjectStore.addAsset(newAsset))
 
-    SchemaService.add(newAsset.meta.id, schema)
+    SchemaService.add(newAsset.meta.id, [
+        {
+            id: "id",
+            type: "uuid",
+        },
+        {
+            id: "name",
+            type: "string",
+            default: "name",
+        },
+        {
+            id: "level",
+            type: "number",
+            default: 1,
+            min: 1,
+            max: 99,
+        },
+    ])
     PersistenceService.updated()
 }
 
@@ -66,7 +83,7 @@ const removeAsset = (assetId: string) => {
 }
 
 const addRow = (data: AssetItem) => {
-    const assetId = store.getState().state.selectedAssetId
+    const assetId = store.getState().cache.selectedAssetId
     if (!assetId) {
         console.warn(`No asset has been selected`)
         return
@@ -95,7 +112,7 @@ const addRow = (data: AssetItem) => {
 }
 
 const removeRow = (index: number) => {
-    const assetId = store.getState().state.selectedAssetId
+    const assetId = store.getState().cache.selectedAssetId
     store.dispatch(
         ProjectStore.removeRow({
             assetId,
@@ -107,7 +124,7 @@ const removeRow = (index: number) => {
 }
 
 export const editRow = (index: number, key: string, value: unknown) => {
-    const assetId = store.getState().state.selectedAssetId
+    const assetId = store.getState().cache.selectedAssetId
     store.dispatch(
         ProjectStore.editRow({
             assetId,
@@ -129,22 +146,3 @@ export default {
     removeRow,
     editRow,
 }
-
-const schema: Schema = [
-    {
-        id: "id",
-        type: "uuid",
-    },
-    {
-        id: "name",
-        type: "string",
-        default: "name",
-    },
-    {
-        id: "level",
-        type: "number",
-        default: 1,
-        min: 1,
-        max: 99,
-    },
-]
