@@ -1,13 +1,13 @@
 import React from "react"
-import { useDispatch, useSelector } from "react-redux"
+import { useSelector } from "react-redux"
 import styled from "styled-components"
 import { RootState } from "../../app/RootReducer"
-import * as Project from "./ProjectSlice"
 import { AssetItem, ProjectAsset, ProjectAssets } from "../../Types"
 import { Centered } from "../../components/Common"
 import Editable from "../../components/Editable"
 import SchemaService from "../schema/SchemaService"
 import { Schemas, Schema } from "../schema/Types"
+import ProjectService from "./ProjectService"
 
 const ViewContainerBody = styled.div`
     flex: 1;
@@ -71,7 +71,6 @@ type ViewContainerProps = {
     schemas: Schemas
 }
 const ViewContainer = ({ assets, schemas }: ViewContainerProps) => {
-    const dispatch = useDispatch()
     const { selectedAssetId } = useSelector((state: RootState) => state.state)
 
     const asset = assets[selectedAssetId]
@@ -79,16 +78,16 @@ const ViewContainer = ({ assets, schemas }: ViewContainerProps) => {
 
     const handleAdd = () => {
         const newRow = SchemaService.createRow(schema)
-        dispatch(Project.addRow(newRow))
+        ProjectService.addRow(newRow)
     }
 
     const handleRemove = (index: number) => {
-        dispatch(Project.removeRow(index))
+        ProjectService.removeRow(index)
     }
 
     const handleChange = (index: number, key: string, value: string) => {
         const processedValue = SchemaService.processValue(schema, key, value)
-        dispatch(Project.editRow(index, key, processedValue))
+        ProjectService.editRow(index, key, processedValue)
     }
 
     const handleSchemaItem = () => {}

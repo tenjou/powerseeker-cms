@@ -6,7 +6,47 @@ import {
     SchemaItemNumber,
     SchemaItemString,
     SchemaItemUUID,
+    Schemas,
 } from "./Types"
+import SchemaStore from "./SchemaStore"
+import store from "../../app/Store"
+
+const load = (schemas: Schemas) => {
+    store.dispatch(SchemaStore.load(schemas))
+}
+
+const unload = () => {
+    store.dispatch(SchemaStore.unload())
+}
+
+const add = (id: string, schema: Schema) => {
+    if (!store.getState().schemas) {
+        console.warn(`No schemas has been loaded`)
+        return
+    }
+
+    store.dispatch(
+        SchemaStore.set({
+            id,
+            schema,
+        })
+    )
+}
+
+const remove = (id: string) => {
+    const schemas = store.getState().schemas
+    if (!schemas) {
+        console.warn(`No schemas has been loaded`)
+        return
+    }
+
+    if (!schemas[id]) {
+        console.warn(`Failed to find schema with Id: ${id}`)
+        return
+    }
+
+    store.dispatch(SchemaStore.remove(id))
+}
 
 const createRow = (schema: Schema) => {
     const row: AssetItem = {}
@@ -89,6 +129,10 @@ const processValueUUID = (schemaItem: SchemaItemUUID, value: string) => {
 }
 
 export default {
+    load,
+    unload,
+    add,
+    remove,
     createRow,
     createValue,
     processValue,

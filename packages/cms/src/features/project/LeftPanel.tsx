@@ -4,26 +4,7 @@ import styled from "styled-components"
 import { Centered } from "../../components/Common"
 import { ProjectAsset } from "../../Types"
 import * as State from "../state/StateSlice"
-import * as ProjectSlice from "./ProjectSlice"
-
-// const schema: Schema = [
-//     {
-//         id: "id",
-//         type: "uuid",
-//     },
-//     {
-//         id: "name",
-//         type: "string",
-//         default: "name",
-//     },
-//     {
-//         id: "level",
-//         type: "number",
-//         default: 1,
-//         min: 1,
-//         max: 99,
-//     },
-// ]
+import ProjectService from "./ProjectService"
 
 const LeftPanelBody = styled.div`
     display: flex;
@@ -38,10 +19,6 @@ type LeftPanelProps = {
 }
 const LeftPanel = ({ assets }: LeftPanelProps) => {
     const dispatch = useDispatch()
-
-    const handleRemoveAsset = (assetId: string) => {
-        dispatch(ProjectSlice.removeAsset(assetId))
-    }
 
     const handleClick = (assetId: string) => {
         dispatch(State.selectAsset(assetId))
@@ -65,7 +42,7 @@ const LeftPanel = ({ assets }: LeftPanelProps) => {
                     <button onClick={() => handleClick(assetId)}>
                         {assets[assetId].meta.name}
                     </button>
-                    <button onClick={() => handleRemoveAsset(assetId)}>
+                    <button onClick={() => ProjectService.removeAsset(assetId)}>
                         Remove
                     </button>
                 </div>
@@ -74,19 +51,11 @@ const LeftPanel = ({ assets }: LeftPanelProps) => {
     )
 }
 
-const LeftPanelHeader = () => {
-    const dispatch = useDispatch()
-
-    const handleCreateAsset = () => {
-        // dispatch(ProjectSlice.createAsset(schema))
-    }
-
-    return (
-        <div>
-            <span>Assets</span>
-            <button onClick={handleCreateAsset}>+</button>
-        </div>
-    )
-}
+const LeftPanelHeader = () => (
+    <div>
+        <span>Assets</span>
+        <button onClick={ProjectService.createAsset}>+</button>
+    </div>
+)
 
 export default LeftPanel

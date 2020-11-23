@@ -48,41 +48,45 @@ const SchemaStore = createSlice({
     },
 })
 
-export const { load, unload } = SchemaStore.actions
+export const store = SchemaStore.reducer
 
-export const add = (id: string, schema: Schema) => (
-    dispatch: AppDispatch,
-    getState: () => RootState
-) => {
-    if (!getState().schemas) {
-        console.warn(`No schemas has been loaded`)
-        return
-    }
+export default SchemaStore.actions
 
-    dispatch(
-        SchemaStore.actions.set({
-            id,
-            schema,
-        })
-    )
-}
+// export const { load, unload } = SchemaStore.actions
 
-export const remove = (id: string) => (
-    dispatch: AppDispatch,
-    getState: () => RootState
-) => {
-    const schemas = getState().schemas
-    if (!schemas) {
-        console.warn(`No schemas has been loaded`)
-        return
-    }
+// export const add = (id: string, schema: Schema) => (
+//     dispatch: AppDispatch,
+//     getState: () => RootState
+// ) => {
+//     if (!getState().schemas) {
+//         console.warn(`No schemas has been loaded`)
+//         return
+//     }
 
-    if (!schemas[id]) {
-        console.warn(`Failed to find schema with Id: ${id}`)
-        return
-    }
+//     dispatch(
+//         SchemaStore.actions.set({
+//             id,
+//             schema,
+//         })
+//     )
+// }
 
-    dispatch(SchemaStore.actions.remove(id))
-}
+// export const remove = (id: string) => (
+//     dispatch: AppDispatch,
+//     getState: () => RootState
+// ) => {
+//     const schemas = getState().schemas
+//     if (!schemas) {
+//         console.warn(`No schemas has been loaded`)
+//         return
+//     }
 
-export default SchemaStore.reducer
+//     if (!schemas[id]) {
+//         console.warn(`Failed to find schema with Id: ${id}`)
+//         return
+//     }
+
+//     dispatch(SchemaStore.actions.remove(id))
+// }
+
+// export default SchemaStore.reducer

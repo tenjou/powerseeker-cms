@@ -1,8 +1,8 @@
 import { combineReducers } from "@reduxjs/toolkit"
-import project from "./../features/project/ProjectSlice"
+import { store as project } from "../features/project/ProjectStore"
 import { store as projects } from "../features/projects/ProjectsStore"
 import state from "./../features/state/StateSlice"
-import schemas from "../features/schema/SchemaStore"
+import { store as schemas } from "../features/schema/SchemaStore"
 
 const rootReducer = combineReducers({
     projects,
