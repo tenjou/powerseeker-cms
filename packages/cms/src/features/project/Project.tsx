@@ -2,13 +2,15 @@ import React, { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { RouteComponentProps } from "react-router-dom"
 import styled from "styled-components"
-import LeftPanel from "./LeftPanel"
-import NavBar from "../../components/NavBar"
-import ViewContainer from "../../components/ViewContainer"
-import { selectAsset } from "../state/StateSlice"
-import * as ProjectSlice from "./ProjectSlice"
 import { RootState } from "../../app/RootReducer"
 import { Centered } from "../../components/Common"
+import NavBar from "../../components/NavBar"
+import PersistenceService from "../persistence/PersistenceService"
+import { selectAsset } from "../state/StateSlice"
+import * as SchemaStore from "./../schema/SchemaStore"
+import LeftPanel from "./LeftPanel"
+import * as ProjectSlice from "./ProjectSlice"
+import ViewContainer from "./ViewContainer"
 
 type TProjectParams = {
     projectId: string
@@ -16,14 +18,32 @@ type TProjectParams = {
 }
 export default function Project({
     match,
+    history,
 }: RouteComponentProps<TProjectParams>) {
     const dispatch = useDispatch()
     const project = useSelector((state: RootState) => state.project)
     const schemas = useSelector((state: RootState) => state.schemas)
 
     useEffect(() => {
-        dispatch(ProjectSlice.load(match.params.projectId))
+        const saveFile = PersistenceService.load(match.params.projectId)
+        if (!saveFile) {
+            history.replace("/404")
+            return
+        }
+
+        dispatch(
+            ProjectSlice.load({
+                meta: saveFile.meta,
+                data: saveFile.data,
+            })
+        )
+        dispatch(SchemaStore.load(saveFile.schemas))
         dispatch(selectAsset(match.params.assetId || ""))
+
+        return () => {
+            dispatch(ProjectSlice.unload())
+            dispatch(SchemaStore.unload())
+        }
     }, [])
 
     if (!project || !schemas) {

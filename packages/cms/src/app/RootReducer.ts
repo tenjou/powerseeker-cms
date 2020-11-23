@@ -1,6 +1,6 @@
 import { combineReducers } from "@reduxjs/toolkit"
 import project from "./../features/project/ProjectSlice"
-import projects from "./../features/projects/ProjectsSlice"
+import projects from "../features/projects/ProjectsStore"
 import state from "./../features/state/StateSlice"
 import schemas from "../features/schema/SchemaStore"
 

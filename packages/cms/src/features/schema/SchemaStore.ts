@@ -17,10 +17,18 @@ const SchemaStore = createSlice({
     initialState,
     reducers: {
         load(state, action: PayloadAction<Schemas>) {
+            if (state) {
+                console.warn(`Schemas are already loaded`)
+                return
+            }
             return action.payload
         },
 
-        unload() {
+        unload(state) {
+            if (!state) {
+                console.warn(`No schemas has been loaded`)
+                return
+            }
             return null
         },
 
@@ -40,29 +48,7 @@ const SchemaStore = createSlice({
     },
 })
 
-export const load = (schemas: Schemas) => (
-    dispatch: AppDispatch,
-    getState: () => RootState
-) => {
-    if (getState().schemas) {
-        console.warn(`Schemas are already loaded`)
-        return
-    }
-
-    dispatch(SchemaStore.actions.load(schemas))
-}
-
-export const unload = (schemas: Schemas) => (
-    dispatch: AppDispatch,
-    getState: () => RootState
-) => {
-    if (!getState().schemas) {
-        console.warn(`No schemas has been loaded`)
-        return
-    }
-
-    dispatch(SchemaStore.actions.unload())
-}
+export const { load, unload } = SchemaStore.actions
 
 export const add = (id: string, schema: Schema) => (
     dispatch: AppDispatch,

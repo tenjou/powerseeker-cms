@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom"
 import { RootState } from "../../app/RootReducer"
 import Editable from "../../components/Editable"
 import { Project } from "../../Types"
-import * as ProjectsSlice from "./ProjectsSlice"
+import * as ProjectsSlice from "./ProjectsStore"
 
 const ProjectsHeader = () => {
     const dispatch = useDispatch()

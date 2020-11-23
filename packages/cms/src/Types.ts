@@ -14,12 +14,14 @@ export type ProjectAsset = {
 
 export type ProjectAssets = Record<string, ProjectAsset>
 
+export type ProjectMeta = {
+    id: string
+    name: string
+    createdAt: number
+    updatedAt: number
+}
+
 export type Project = {
-    meta: {
-        id: string
-        name: string
-        createdAt: number
-        updatedAt: number
-    }
+    meta: ProjectMeta
     data: ProjectAssets
 }

@@ -2,10 +2,10 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { RootState } from "../../app/RootReducer"
 import { AppDispatch } from "../../app/Store"
 import { ProjectAsset, AssetItem, Project } from "../../Types"
-import { createProjectFileId, uuid4 } from "./../../Utils"
-import history from "./../../app/History"
+import { uuid4 } from "./../../Utils"
 import { Schema } from "../schema/Types"
 import * as SchemaStore from "../schema/SchemaStore"
+import PersistenceService from "../persistence/PersistenceService"
 
 type AssetItemIndex = {
     assetId: string
@@ -79,44 +79,7 @@ const projectSlice = createSlice({
     },
 })
 
-export const load = (projectId: string) => (
-    dispatch: AppDispatch,
-    getState: () => RootState
-) => {
-    const json = localStorage.getItem(createProjectFileId(projectId))
-    if (!json) {
-        console.warn(`Failed to load project with Id: ${projectId}`)
-        history.replace("/404")
-        return
-    }
-
-    const project = JSON.parse(json) as Project
-    dispatch(projectSlice.actions.load(project))
-}
-
-export const unload = () => (
-    dispatch: AppDispatch,
-    getState: () => RootState
-) => {
-    dispatch(projectSlice.actions.unload())
-}
-
-export const save = () => (
-    dispatch: AppDispatch,
-    getState: () => RootState
-) => {
-    const project = getState().project
-    if (!project) {
-        console.warn(`No project has been loaded yet`)
-        return
-    }
-
-    localStorage.setItem(
-        createProjectFileId(project.meta.id),
-        JSON.stringify(project)
-    )
-    console.log("(Saved)")
-}
+export const { load, unload } = projectSlice.actions
 
 export const createAsset = (schema: Schema) => (
     dispatch: AppDispatch,
@@ -135,7 +98,8 @@ export const createAsset = (schema: Schema) => (
 
     dispatch(projectSlice.actions.createAsset(newAsset))
     dispatch(SchemaStore.add(newAsset.meta.id, schema))
-    dispatch(save())
+
+    PersistenceService.updated()
 }
 
 export const removeAsset = (assetId: string) => (
@@ -155,7 +119,8 @@ export const removeAsset = (assetId: string) => (
     }
 
     dispatch(projectSlice.actions.removeAsset(assetId))
-    dispatch(save())
+
+    PersistenceService.updated()
 }
 
 export const addRow = (data: AssetItem) => (
@@ -186,7 +151,8 @@ export const addRow = (data: AssetItem) => (
             data,
         })
     )
-    dispatch(save())
+
+    PersistenceService.updated()
 }
 
 export const removeRow = (index: number) => (
@@ -200,7 +166,8 @@ export const removeRow = (index: number) => (
             index,
         })
     )
-    dispatch(save())
+
+    PersistenceService.updated()
 }
 
 export const editRow = (index: number, key: string, value: unknown) => (
@@ -216,7 +183,8 @@ export const editRow = (index: number, key: string, value: unknown) => (
             value,
         })
     )
-    dispatch(save())
+
+    PersistenceService.updated()
 }
 
 export default projectSlice.reducer

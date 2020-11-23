@@ -1,13 +1,13 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
 import styled from "styled-components"
-import { RootState } from "../app/RootReducer"
-import * as Project from "../features/project/ProjectSlice"
-import { AssetItem, ProjectAsset, ProjectAssets } from "../Types"
-import { Centered } from "./Common"
-import Editable from "./Editable"
-import SchemaService from "../features/schema/SchemaService"
-import { Schemas, Schema } from "../features/schema/Types"
+import { RootState } from "../../app/RootReducer"
+import * as Project from "./ProjectSlice"
+import { AssetItem, ProjectAsset, ProjectAssets } from "../../Types"
+import { Centered } from "../../components/Common"
+import Editable from "../../components/Editable"
+import SchemaService from "../schema/SchemaService"
+import { Schemas, Schema } from "../schema/Types"
 
 const ViewContainerBody = styled.div`
     flex: 1;

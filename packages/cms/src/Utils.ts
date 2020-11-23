@@ -14,5 +14,3 @@ export const uuid4 = () => {
     }
     return tempResult.join("")
 }
-
-export const createProjectFileId = (id: string) => `@${id}`
