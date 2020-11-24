@@ -1,6 +1,11 @@
-export type SchemaItemUUID = { type: "uuid" }
-export type SchemaItemString = { type: "string"; default: string }
-export type SchemaItemNumber = {
+export interface SchemaItemUUID {
+    type: "uuid"
+}
+export interface SchemaItemString {
+    type: "string"
+    default: string
+}
+export interface SchemaItemNumber {
     type: "number"
     default: number
     min: number
@@ -13,6 +18,8 @@ export type SchemaItemType =
     | SchemaItemNumber
 
 export type SchemaItem = { id: string } & SchemaItemType
+
+export type SchemaType = Pick<SchemaItemType, "type">["type"]
 
 export type Schema = SchemaItem[]
 
