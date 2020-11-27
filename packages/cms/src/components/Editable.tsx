@@ -10,14 +10,14 @@ export type ClipboardEventEx<T> = React.ClipboardEvent<T> & {
 
 const noop = () => {}
 
-export default function Editable<T>({
+export default function Editable({
     value,
     placeholder,
     onChange,
     useRightClick = false,
 }: {
-    value: T
-    placeholder: string
+    value: string
+    placeholder?: string
     onChange: (value: string) => void
     useRightClick?: boolean
 }) {
@@ -81,12 +81,13 @@ export default function Editable<T>({
         }
     }
 
-    const showText = editable ? `${value}` : value ? `${value}` : placeholder
-    let style = ""
+    let showText = editable ? `${value}` : value
+    if (!showText && placeholder) {
+        showText = placeholder
+    }
 
     return (
         <div
-            className={style}
             suppressContentEditableWarning={true}
             onKeyDown={handleKeyDown}
             onClick={useRightClick ? noop : handleClick}
