@@ -1,7 +1,4 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
-import { RootState } from "../../app/RootReducer"
-import { AppDispatch } from "../../app/Store"
-import History from "../../app/History"
 
 type InitialState = {
     selectedAssetId: string
