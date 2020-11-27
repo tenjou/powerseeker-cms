@@ -24,3 +24,10 @@ export type SchemaType = SchemaItemType["type"]
 export type Schema = SchemaItem[]
 
 export type Schemas = Record<string, Schema>
+
+export type SchemaDiff = {
+    added: SchemaItem[]
+    removed: SchemaItem[]
+    changed: Record<string, SchemaItem>
+    schema: Schema
+}

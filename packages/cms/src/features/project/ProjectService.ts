@@ -4,6 +4,7 @@ import { AssetItem, ProjectAsset } from "../../Types"
 import { uuid4 } from "../../Utils"
 import PersistenceService from "../persistence/PersistenceService"
 import SchemaService from "../schema/SchemaService"
+import { SchemaDiff } from "../schema/Types"
 import ProjectStore from "./ProjectStore"
 
 const load = (projectId: string) => {
@@ -41,7 +42,7 @@ const createAsset = () => {
 
     store.dispatch(ProjectStore.addAsset(newAsset))
 
-    SchemaService.add(newAsset.meta.id, [
+    SchemaService.set(newAsset.meta.id, [
         {
             id: uuid4(),
             key: "id",
@@ -125,7 +126,7 @@ const removeRow = (index: number) => {
     PersistenceService.updated()
 }
 
-export const editRow = (index: number, key: string, value: unknown) => {
+const editRow = (index: number, key: string, value: unknown) => {
     const assetId = store.getState().cache.selectedAssetId
     store.dispatch(
         ProjectStore.editRow({
@@ -139,6 +140,15 @@ export const editRow = (index: number, key: string, value: unknown) => {
     PersistenceService.updated()
 }
 
+const updateSchema = (schemaDiff: SchemaDiff) => {
+    const assetId = store.getState().cache.selectedAssetId
+
+    store.dispatch(ProjectStore.update({ assetId, schemaDiff }))
+    SchemaService.set(assetId, schemaDiff.schema)
+
+    PersistenceService.updated()
+}
+
 export default {
     load,
     unload,
@@ -147,4 +157,5 @@ export default {
     addRow,
     removeRow,
     editRow,
+    updateSchema,
 }

@@ -24,7 +24,7 @@ const Sheet = ({ schema, data, onEntryRemove, onEntryChange }: SheetProps) => {
             <thead>
                 <tr>
                     {schema.map((entry) => (
-                        <th key={entry.id}>{entry.id}</th>
+                        <th key={entry.key}>{entry.key}</th>
                     ))}
                     <th></th>
                 </tr>
@@ -32,20 +32,20 @@ const Sheet = ({ schema, data, onEntryRemove, onEntryChange }: SheetProps) => {
 
             <tbody>
                 {data.map((dataEntry, index) => (
-                    <tr key={"tr" + dataEntry.id}>
+                    <tr key={index}>
                         {schema.map((shemaEntry) => (
-                            <td key={shemaEntry.id}>
+                            <td key={shemaEntry.key}>
                                 <Editable
                                     value={
                                         dataEntry[
-                                            shemaEntry.id as keyof ProjectAsset
+                                            shemaEntry.key as keyof ProjectAsset
                                         ]
                                     }
                                     placeholder="stuff"
                                     onChange={(value) =>
                                         onEntryChange(
                                             index,
-                                            shemaEntry.id,
+                                            shemaEntry.key,
                                             value
                                         )
                                     }
@@ -88,7 +88,11 @@ const ViewContainer = ({ assets, assetId, schemas }: ViewContainerProps) => {
     }
 
     const handleSchemaItem = () => {
-        SchemaService.edit(assetId)
+        const schemaDiff = SchemaService.edit(assetId)
+        if (!schemaDiff) {
+            return
+        }
+        ProjectService.updateSchema(schemaDiff)
     }
 
     if (!asset) {

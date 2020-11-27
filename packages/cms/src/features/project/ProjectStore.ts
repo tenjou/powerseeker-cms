@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 import { ProjectAsset, AssetItem, Project } from "../../Types"
+import SchemaService from "../schema/SchemaService"
+import { SchemaDiff } from "../schema/Types"
 
 type AssetItemIndex = {
     assetId: string
@@ -14,6 +16,11 @@ type AddAssetItem = {
 type AssetItemValue = AssetItemIndex & {
     key: string
     value: unknown
+}
+
+type AssetSchemaInput = {
+    assetId: string
+    schemaDiff: SchemaDiff
 }
 
 type ProjectState = Project | null
@@ -52,6 +59,32 @@ const ProjectStore = createSlice({
             }
             const asset = state.data[action.payload.assetId]
             asset.data.push(action.payload.data)
+        },
+
+        update(state, action: PayloadAction<AssetSchemaInput>) {
+            if (!state) {
+                return
+            }
+
+            const diff = action.payload.schemaDiff
+            const asset = state.data[action.payload.assetId]
+            asset.meta.updatedAt = Date.now()
+
+            for (let n = 0; n < diff.added.length; n++) {
+                const schemaItem = diff.added[n]
+                for (let m = 0; m < asset.data.length; m++) {
+                    asset.data[m][schemaItem.key] = SchemaService.createValue(
+                        schemaItem
+                    )
+                }
+            }
+
+            for (let n = 0; n < diff.removed.length; n++) {
+                const schemaItem = diff.removed[n]
+                for (let m = 0; m < asset.data.length; m++) {
+                    delete asset.data[m][schemaItem.key]
+                }
+            }
         },
 
         removeRow(state, action: PayloadAction<AssetItemIndex>) {

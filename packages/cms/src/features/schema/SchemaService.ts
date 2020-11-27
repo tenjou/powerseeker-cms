@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { AssetItem, ProjectAsset } from "../../Types"
+import { AssetItem } from "../../Types"
 import { uuid4 } from "../../Utils"
 import {
     Schema,
@@ -8,16 +8,10 @@ import {
     SchemaItemString,
     SchemaItemUUID,
     Schemas,
-    SchemaType,
+    SchemaDiff,
 } from "./Types"
 import SchemaStore from "./SchemaStore"
 import store from "../../app/Store"
-
-type SchemaDiff = {
-    added: SchemaItem[]
-    removed: SchemaItem[]
-    changed: Record<string, SchemaItem>
-}
 
 const load = (schemas: Schemas) => {
     store.dispatch(SchemaStore.load(schemas))
@@ -27,7 +21,7 @@ const unload = () => {
     store.dispatch(SchemaStore.unload())
 }
 
-const add = (id: string, schema: Schema) => {
+const set = (id: string, schema: Schema) => {
     if (!store.getState().schemas) {
         console.warn(`No schemas has been loaded`)
         return
@@ -59,7 +53,7 @@ const remove = (id: string) => {
 const edit = (schemaId: string) => {
     const schemas = store.getState().schemas
     if (!schemas) {
-        return
+        return null
     }
     const schema = schemas[schemaId]
     const schemaNew = _.cloneDeep(schema)
@@ -81,6 +75,7 @@ const diff = (schema: Schema, schemaNew: Schema) => {
         added: [],
         removed: [],
         changed: {},
+        schema: schemaNew,
     }
 
     for (let n = 0; n < schemaNew.length; n++) {
@@ -112,7 +107,7 @@ const createRow = (schema: Schema) => {
 
     for (let n = 0; n < schema.length; n++) {
         const item = schema[n]
-        row[item.id] = createValue(item)
+        row[item.key] = createValue(item)
     }
 
     return row
@@ -130,7 +125,7 @@ const createValue = (schemaItem: SchemaItem) => {
 }
 
 const processValue = (schema: Schema, key: string, value: unknown) => {
-    const schemaItem = schema.find((item) => item.id === key)
+    const schemaItem = schema.find((item) => item.key === key)
     if (!schemaItem) {
         console.warn(`Failed to find item with a key in the schema: ${key}`)
         return null
@@ -190,7 +185,7 @@ const processValueUUID = (schemaItem: SchemaItemUUID, value: string) => {
 export default {
     load,
     unload,
-    add,
+    set,
     remove,
     edit,
     diff,
