@@ -4,7 +4,7 @@ import { AssetItem, ProjectAsset, ProjectAssets } from "../../Types"
 import { Centered } from "../../components/Common"
 import Editable from "../../components/Editable"
 import SchemaService from "../schema/SchemaService"
-import { Schemas, Schema } from "../schema/Types"
+import { Schemas, Schema, SchemaItem } from "../schema/Types"
 import ProjectService from "./ProjectService"
 
 const ViewContainerBody = styled.div`
@@ -12,11 +12,13 @@ const ViewContainerBody = styled.div`
     background-color: #fff;
 `
 
+type OnEntryChangeFunc = (index: number, key: string, value: string) => void
+
 type SheetProps = {
     schema: Schema
     data: AssetItem[]
     onEntryRemove: (index: number) => void
-    onEntryChange: (index: number, key: string, value: string) => void
+    onEntryChange: OnEntryChangeFunc
 }
 const Sheet = ({ schema, data, onEntryRemove, onEntryChange }: SheetProps) => {
     return (
@@ -31,25 +33,16 @@ const Sheet = ({ schema, data, onEntryRemove, onEntryChange }: SheetProps) => {
             </thead>
 
             <tbody>
-                {data.map((dataEntry, index) => (
+                {data.map((assetItem, index) => (
                     <tr key={index}>
-                        {schema.map((shemaEntry) => (
-                            <td key={shemaEntry.key}>
-                                <Editable
-                                    value={
-                                        dataEntry[
-                                            shemaEntry.key as keyof ProjectAsset
-                                        ]
-                                    }
-                                    placeholder="stuff"
-                                    onChange={(value) =>
-                                        onEntryChange(
-                                            index,
-                                            shemaEntry.key,
-                                            value
-                                        )
-                                    }
-                                />
+                        {schema.map((schemaItem) => (
+                            <td key={schemaItem.key}>
+                                {renderCell(
+                                    schemaItem,
+                                    assetItem,
+                                    onEntryChange,
+                                    index
+                                )}
                             </td>
                         ))}
                         <td>
@@ -62,6 +55,42 @@ const Sheet = ({ schema, data, onEntryRemove, onEntryChange }: SheetProps) => {
             </tbody>
         </table>
     )
+}
+
+const renderCell = (
+    schemaItem: SchemaItem,
+    assetItem: AssetItem,
+    onEntryChange: OnEntryChangeFunc,
+    index: number
+) => {
+    switch (schemaItem.type) {
+        case "number":
+            return (
+                <div>
+                    {assetItem[schemaItem.key as keyof ProjectAsset] + ""}
+                </div>
+            )
+
+        case "string":
+            return (
+                <Editable
+                    value={assetItem[schemaItem.key as keyof ProjectAsset] + ""}
+                    onChange={(value) =>
+                        onEntryChange(index, schemaItem.key, value)
+                    }
+                />
+            )
+
+        case "uuid":
+            return (
+                <div>
+                    {assetItem[schemaItem.key as keyof ProjectAsset] + ""}
+                </div>
+            )
+
+        default:
+            return null
+    }
 }
 
 type ViewContainerProps = {
@@ -106,7 +135,7 @@ const ViewContainer = ({ assets, assetId, schemas }: ViewContainerProps) => {
     return (
         <ViewContainerBody>
             <button onClick={handleAdd}>Add</button>
-            <button onClick={handleSchemaItem}>AddSchemaItem</button>
+            <button onClick={handleSchemaItem}>Edit </button>
             <Sheet
                 schema={schema}
                 data={asset.data}
