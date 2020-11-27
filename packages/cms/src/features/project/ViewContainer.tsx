@@ -66,9 +66,19 @@ const renderCell = (
     switch (schemaItem.type) {
         case "number":
             return (
-                <div>
-                    {assetItem[schemaItem.key as keyof ProjectAsset] + ""}
-                </div>
+                <input
+                    type="number"
+                    value={assetItem[schemaItem.key as keyof ProjectAsset] + ""}
+                    min={schemaItem.min}
+                    max={schemaItem.max}
+                    onChange={(event) =>
+                        onEntryChange(
+                            index,
+                            schemaItem.key,
+                            event.currentTarget.value
+                        )
+                    }
+                />
             )
 
         case "string":
