@@ -1,4 +1,5 @@
-import { AssetItem } from "../../Types"
+import _ from "lodash"
+import { AssetItem, ProjectAsset } from "../../Types"
 import { uuid4 } from "../../Utils"
 import {
     Schema,
@@ -7,9 +8,16 @@ import {
     SchemaItemString,
     SchemaItemUUID,
     Schemas,
+    SchemaType,
 } from "./Types"
 import SchemaStore from "./SchemaStore"
 import store from "../../app/Store"
+
+type SchemaDiff = {
+    added: SchemaItem[]
+    removed: SchemaItem[]
+    changed: Record<string, SchemaItem>
+}
 
 const load = (schemas: Schemas) => {
     store.dispatch(SchemaStore.load(schemas))
@@ -46,6 +54,57 @@ const remove = (id: string) => {
     }
 
     store.dispatch(SchemaStore.remove(id))
+}
+
+const edit = (schemaId: string) => {
+    const schemas = store.getState().schemas
+    if (!schemas) {
+        return
+    }
+    const schema = schemas[schemaId]
+    const schemaNew = _.cloneDeep(schema)
+
+    const schemaItem: SchemaItem = {
+        id: uuid4(),
+        key: Date.now() + "",
+        type: "string",
+        default: "str_value",
+    }
+    schemaNew.push(schemaItem)
+
+    const schemaDiff = diff(schema, schemaNew)
+    return schemaDiff
+}
+
+const diff = (schema: Schema, schemaNew: Schema) => {
+    const schemaDiff: SchemaDiff = {
+        added: [],
+        removed: [],
+        changed: {},
+    }
+
+    for (let n = 0; n < schemaNew.length; n++) {
+        const item = schemaNew[n]
+        const itemPrev = schema.find((entry) => entry.id === item.id)
+        if (!itemPrev) {
+            schemaDiff.added.push(item)
+        } else if (item === itemPrev) {
+            if (item.type !== itemPrev.type) {
+                schemaDiff.changed[item.id] = item
+            }
+        }
+    }
+
+    // Check if previous keys exists in the new schema
+    for (let n = 0; n < schema.length; n++) {
+        const itemPrev = schema[n]
+        const item = schemaNew.find((entry) => entry.id === itemPrev.id)
+        if (!item) {
+            schemaDiff.removed.push(itemPrev)
+        }
+    }
+
+    return schemaDiff
 }
 
 const createRow = (schema: Schema) => {
@@ -133,6 +192,8 @@ export default {
     unload,
     add,
     remove,
+    edit,
+    diff,
     createRow,
     createValue,
     processValue,

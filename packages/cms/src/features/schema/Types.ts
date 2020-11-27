@@ -17,9 +17,9 @@ export type SchemaItemType =
     | SchemaItemString
     | SchemaItemNumber
 
-export type SchemaItem = { id: string } & SchemaItemType
+export type SchemaItem = { id: string; key: string } & SchemaItemType
 
-export type SchemaType = Pick<SchemaItemType, "type">["type"]
+export type SchemaType = SchemaItemType["type"]
 
 export type Schema = SchemaItem[]
 

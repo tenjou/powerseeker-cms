@@ -43,16 +43,19 @@ const createAsset = () => {
 
     SchemaService.add(newAsset.meta.id, [
         {
-            id: "id",
+            id: uuid4(),
+            key: "id",
             type: "uuid",
         },
         {
-            id: "name",
+            id: uuid4(),
+            key: "name",
             type: "string",
             default: "name",
         },
         {
-            id: "level",
+            id: uuid4(),
+            key: "level",
             type: "number",
             default: 1,
             min: 1,

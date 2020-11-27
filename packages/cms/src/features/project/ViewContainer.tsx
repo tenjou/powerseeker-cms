@@ -1,7 +1,5 @@
 import React from "react"
-import { useSelector } from "react-redux"
 import styled from "styled-components"
-import { RootState } from "../../app/RootReducer"
 import { AssetItem, ProjectAsset, ProjectAssets } from "../../Types"
 import { Centered } from "../../components/Common"
 import Editable from "../../components/Editable"
@@ -89,7 +87,9 @@ const ViewContainer = ({ assets, assetId, schemas }: ViewContainerProps) => {
         ProjectService.editRow(index, key, processedValue)
     }
 
-    const handleSchemaItem = () => {}
+    const handleSchemaItem = () => {
+        SchemaService.edit(assetId)
+    }
 
     if (!asset) {
         return (
