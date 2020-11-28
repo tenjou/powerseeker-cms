@@ -1,4 +1,4 @@
-import { useEffect } from "react"
+import React, { useEffect } from "react"
 import { useSelector } from "react-redux"
 import { RouteComponentProps } from "react-router-dom"
 import styled from "styled-components"
@@ -6,6 +6,7 @@ import { RootState } from "../../app/RootReducer"
 import { Centered } from "../../components/Common"
 import NavBar from "../../components/NavBar"
 import CacheService from "../cache/CacheService"
+import SchemaEdit from "../schema/SchemaEdit"
 import LeftPanel from "./LeftPanel"
 import ProjectService from "./ProjectService"
 import ViewContainer from "./ViewContainer"
@@ -35,17 +36,22 @@ export default function Project({
     }
 
     return (
-        <Vertical>
-            <NavBar project={project} />
-            <Horizontal>
-                <LeftPanel assets={project.data} />
-                <ViewContainer
-                    assets={project.data}
-                    assetId={assetId}
-                    schemas={schemas}
-                />
-            </Horizontal>
-        </Vertical>
+        <>
+            <Vertical>
+                <NavBar project={project} />
+                <Horizontal>
+                    <LeftPanel assets={project.data} />
+                    <ViewContainer
+                        assets={project.data}
+                        assetId={assetId}
+                        schemas={schemas}
+                    />
+                </Horizontal>
+            </Vertical>
+            <Overlay>
+                <SchemaEdit />
+            </Overlay>
+        </>
     )
 }
 
@@ -59,4 +65,18 @@ const Horizontal = styled.div`
     display: flex;
     flex-direction: row;
     flex: 1;
+`
+
+const Overlay = styled.div`
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    background: #000000c9;
 `
