@@ -1,4 +1,4 @@
-import React from "react"
+import { Link } from "react-router-dom"
 import styled from "styled-components"
 import { Project } from "../Types"
 
@@ -10,11 +10,30 @@ const NavBarBody = styled.div`
     align-items: center;
     padding: 0 10px;
 `
+
+const NavTitle = styled.div`
+    font-weight: 500;
+    padding-right: 10px;
+`
+
+const NavLink = styled(Link)`
+    color: #00bcd4;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 0 5px;
+`
+
 type NavBarProps = {
     project: Project
 }
 const NavBar = ({ project }: NavBarProps) => {
-    return <NavBarBody>{project.meta.name}</NavBarBody>
+    return (
+        <NavBarBody>
+            <NavTitle>{project.meta.name}</NavTitle>
+            <NavLink to="/import">Import</NavLink>
+            <NavLink to="/export">Export</NavLink>
+        </NavBarBody>
+    )
 }
 
 export default NavBar
