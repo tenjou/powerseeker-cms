@@ -62,6 +62,12 @@ const createAsset = () => {
             min: 1,
             max: 99,
         },
+        {
+            id: uuid4(),
+            key: "type",
+            type: "enum",
+            values: ["item_1", "item_2", "item_3"],
+        },
     ])
     PersistenceService.updated()
 }
@@ -116,6 +122,7 @@ const addRow = (data: AssetItem) => {
 
 const removeRow = (index: number) => {
     const assetId = store.getState().cache.selectedAssetId
+
     store.dispatch(
         ProjectStore.removeRow({
             assetId,
@@ -127,7 +134,12 @@ const removeRow = (index: number) => {
 }
 
 const editRow = (index: number, key: string, value: unknown) => {
+    if (value === undefined) {
+        return
+    }
+
     const assetId = store.getState().cache.selectedAssetId
+
     store.dispatch(
         ProjectStore.editRow({
             assetId,

@@ -9,6 +9,7 @@ import {
     SchemaItemUUID,
     Schemas,
     SchemaDiff,
+    SchemaItemEnum,
 } from "./Types"
 import SchemaStore from "./SchemaStore"
 import store from "../../app/Store"
@@ -155,6 +156,13 @@ const processValue = (schema: Schema, key: string, value: unknown) => {
             return ""
         }
 
+        case "enum": {
+            if (typeof value === "string") {
+                return processValueEnum(schemaItem, value)
+            }
+            return value
+        }
+
         case "uuid": {
             if (typeof value === "string") {
                 return processValueUUID(schemaItem, value)
@@ -175,6 +183,13 @@ const processValueNumber = (schemaItem: SchemaItemNumber, value: number) => {
 }
 
 const processValueString = (schemaItem: SchemaItemString, value: string) => {
+    return value
+}
+
+const processValueEnum = (schemaItem: SchemaItemEnum, value: string) => {
+    if (schemaItem.values.indexOf(value) === -1) {
+        return schemaItem.values[0] || ""
+    }
     return value
 }
 

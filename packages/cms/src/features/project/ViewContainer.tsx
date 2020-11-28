@@ -91,6 +91,26 @@ const renderCell = (
                 />
             )
 
+        case "enum":
+            return (
+                <select
+                    value={assetItem[schemaItem.key as keyof ProjectAsset] + ""}
+                    onChange={(event) =>
+                        onEntryChange(
+                            index,
+                            schemaItem.key,
+                            event.currentTarget.value
+                        )
+                    }
+                >
+                    {schemaItem.values.map((value, index) => (
+                        <option key={index} value={value}>
+                            {value}
+                        </option>
+                    ))}
+                </select>
+            )
+
         case "uuid":
             return (
                 <div>
