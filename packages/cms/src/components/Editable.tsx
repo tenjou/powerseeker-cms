@@ -1,4 +1,4 @@
-import React, { createRef, useState } from "react"
+import { createRef, useState } from "react"
 
 export type ClipboardEventEx<T> = React.ClipboardEvent<T> & {
     originalEvent: {

@@ -1,4 +1,3 @@
-import React from "react"
 import styled from "styled-components"
 import { Centered } from "../../components/Common"
 import { ProjectAsset } from "../../Types"
