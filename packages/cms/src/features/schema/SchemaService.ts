@@ -1,18 +1,19 @@
 import _ from "lodash"
+import store from "../../app/Store"
 import { AssetItem } from "../../Types"
 import { uuid4 } from "../../Utils"
+import SchemaStore from "./SchemaStore"
 import {
     Schema,
+    SchemaDiff,
     SchemaItem,
+    SchemaItemBoolean,
+    SchemaItemEnum,
     SchemaItemNumber,
     SchemaItemString,
     SchemaItemUUID,
     Schemas,
-    SchemaDiff,
-    SchemaItemEnum,
 } from "./Types"
-import SchemaStore from "./SchemaStore"
-import store from "../../app/Store"
 
 const load = (schemas: Schemas) => {
     store.dispatch(SchemaStore.load(schemas))
@@ -146,6 +147,19 @@ const processValue = (schema: Schema, key: string, value: unknown) => {
             return 0
         }
 
+        case "boolean": {
+            if (typeof value === "string" || typeof value === "number") {
+                return processValueBoolean(schemaItem, !!value)
+            }
+            if (typeof value === "boolean") {
+                return processValueBoolean(schemaItem, value)
+            }
+            console.warn(
+                `Unhandled type: ${typeof value}, for: ${schemaItem.type}`
+            )
+            return 0
+        }
+
         case "string": {
             if (typeof value === "string") {
                 return processValueString(schemaItem, value)
@@ -176,10 +190,17 @@ const processValue = (schema: Schema, key: string, value: unknown) => {
 }
 
 const processValueNumber = (schemaItem: SchemaItemNumber, value: number) => {
-    if (isNaN(value)) {
+    if (Number.isNaN(value)) {
         value = 0
     }
     return Math.min(Math.max(value, schemaItem.min), schemaItem.max)
+}
+
+const processValueBoolean = (schemaItem: SchemaItemBoolean, value: boolean) => {
+    if (Number.isNaN(value)) {
+        value = false
+    }
+    return value
 }
 
 const processValueString = (schemaItem: SchemaItemString, value: string) => {

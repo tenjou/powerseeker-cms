@@ -68,6 +68,12 @@ const createAsset = () => {
             type: "enum",
             values: ["item_1", "item_2", "item_3"],
         },
+        {
+            id: uuid4(),
+            key: "enabled",
+            type: "boolean",
+            default: true,
+        },
     ])
     PersistenceService.updated()
 }

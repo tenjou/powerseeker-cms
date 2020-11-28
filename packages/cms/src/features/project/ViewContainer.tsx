@@ -11,7 +11,11 @@ const ViewContainerBody = styled.div`
     background-color: #fff;
 `
 
-type OnEntryChangeFunc = (index: number, key: string, value: string) => void
+type OnEntryChangeFunc = (
+    index: number,
+    key: string,
+    value: string | boolean
+) => void
 
 type SheetProps = {
     schema: Schema
@@ -80,6 +84,21 @@ const renderCell = (
                 />
             )
 
+        case "boolean":
+            return (
+                <input
+                    type="checkbox"
+                    checked={!!assetItem[schemaItem.key as keyof ProjectAsset]}
+                    onChange={(event) =>
+                        onEntryChange(
+                            index,
+                            schemaItem.key,
+                            event.currentTarget.checked
+                        )
+                    }
+                />
+            )
+
         case "string":
             return (
                 <Editable
@@ -140,7 +159,11 @@ const ViewContainer = ({ assets, assetId, schemas }: ViewContainerProps) => {
         ProjectService.removeRow(index)
     }
 
-    const handleChange = (index: number, key: string, value: string) => {
+    const handleChange = (
+        index: number,
+        key: string,
+        value: string | boolean
+    ) => {
         const processedValue = SchemaService.processValue(schema, key, value)
         ProjectService.editRow(index, key, processedValue)
     }

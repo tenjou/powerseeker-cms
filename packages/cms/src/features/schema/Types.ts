@@ -11,6 +11,10 @@ export interface SchemaItemNumber {
     min: number
     max: number
 }
+export interface SchemaItemBoolean {
+    type: "boolean"
+    default: boolean
+}
 export interface SchemaItemEnum {
     type: "enum"
     values: string[]
@@ -20,6 +24,7 @@ export type SchemaItemType =
     | SchemaItemUUID
     | SchemaItemString
     | SchemaItemNumber
+    | SchemaItemBoolean
     | SchemaItemEnum
 
 export type SchemaItem = { id: string; key: string } & SchemaItemType
