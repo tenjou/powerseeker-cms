@@ -1,13 +1,12 @@
 {
     "compilerOptions": {
-        "target": "es6",
         "sourceMap": true,
-        "module": "CommonJS",
+        "module": "esnext",
+        "target": "es2015",
         "outDir": "./public",
         "moduleResolution": "node",
-        "jsx": "react",
+        "jsx": "react-jsx",
         "esModuleInterop": true,
-        "allowJs": true,
         "strict": true,
         "noFallthroughCasesInSwitch": true
     }
