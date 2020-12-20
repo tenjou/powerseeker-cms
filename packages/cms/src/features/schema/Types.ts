@@ -20,16 +20,13 @@ export interface SchemaItemEnum {
     values: string[]
 }
 
-export type SchemaItemType =
-    | SchemaItemUUID
-    | SchemaItemString
-    | SchemaItemNumber
-    | SchemaItemBoolean
-    | SchemaItemEnum
+export type SchemaItemType = SchemaItemUUID | SchemaItemString | SchemaItemNumber | SchemaItemBoolean | SchemaItemEnum
 
 export type SchemaItem = { id: string; key: string } & SchemaItemType
 
 export type SchemaType = SchemaItemType["type"]
+
+export const SchemaTypes: SchemaType[] = ["boolean", "enum", "number", "string", "uuid"]
 
 export type Schema = SchemaItem[]
 
@@ -39,5 +36,6 @@ export type SchemaDiff = {
     added: SchemaItem[]
     removed: SchemaItem[]
     changed: Record<string, SchemaItem>
+    renamed: Record<string, string>
     schema: Schema
 }

@@ -2,6 +2,7 @@ import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import styled from "styled-components"
 import { RootState } from "../app/RootReducer"
+import ProjectService from "../features/project/ProjectService"
 import { Project } from "../Types"
 
 const NavBarBody = styled.div`
@@ -31,17 +32,15 @@ type NavBarProps = {
     project: Project
 }
 const NavBar = ({ project }: NavBarProps) => {
-    const selectedAssetId = useSelector(
-        (state: RootState) => state.cache.selectedAssetId
-    )
+    const selectedAssetId = useSelector((state: RootState) => state.cache.selectedAssetId)
+
+    const projectPath = ProjectService.createPath()
 
     return (
         <NavBarBody>
-            <NavTitle to={`/project/${project.meta.id}/${selectedAssetId}`}>
-                {project.meta.name}
-            </NavTitle>
+            <NavTitle to={`${projectPath}/asset/${selectedAssetId}`}>{project.meta.name}</NavTitle>
             <NavLink to="/import">Import</NavLink>
-            <NavLink to="/export">Export</NavLink>
+            <NavLink to={`${projectPath}/export`}>Export</NavLink>
         </NavBarBody>
     )
 }

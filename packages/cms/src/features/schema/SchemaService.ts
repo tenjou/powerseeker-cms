@@ -37,6 +37,16 @@ const set = (id: string, schema: Schema) => {
     )
 }
 
+const get = (schemaId: string) => {
+    const schemas = store.getState().schemas
+    if (!schemas) {
+        return null
+    }
+
+    const schema = schemas[schemaId]
+    return schema || null
+}
+
 const remove = (id: string) => {
     const schemas = store.getState().schemas
     if (!schemas) {
@@ -52,24 +62,14 @@ const remove = (id: string) => {
     store.dispatch(SchemaStore.remove(id))
 }
 
-const edit = (schemaId: string) => {
-    const schemas = store.getState().schemas
-    if (!schemas) {
+const clone = (schemaId: string) => {
+    const schema = get(schemaId)
+    if (!schema) {
         return null
     }
-    const schema = schemas[schemaId]
+
     const schemaNew = _.cloneDeep(schema)
-
-    const schemaItem: SchemaItem = {
-        id: uuid4(),
-        key: Date.now() + "",
-        type: "string",
-        default: "str_value",
-    }
-    schemaNew.push(schemaItem)
-
-    const schemaDiff = diff(schema, schemaNew)
-    return schemaDiff
+    return schemaNew
 }
 
 const diff = (schema: Schema, schemaNew: Schema) => {
@@ -77,18 +77,22 @@ const diff = (schema: Schema, schemaNew: Schema) => {
         added: [],
         removed: [],
         changed: {},
+        renamed: {},
         schema: schemaNew,
     }
 
     for (let n = 0; n < schemaNew.length; n++) {
         const item = schemaNew[n]
         const itemPrev = schema.find((entry) => entry.id === item.id)
-        if (!itemPrev) {
-            schemaDiff.added.push(item)
-        } else if (item === itemPrev) {
+        if (itemPrev) {
             if (item.type !== itemPrev.type) {
                 schemaDiff.changed[item.id] = item
             }
+            if (item.key !== itemPrev.key) {
+                schemaDiff.renamed[itemPrev.key] = item.key
+            }
+        } else {
+            schemaDiff.added.push(item)
         }
     }
 
@@ -102,6 +106,16 @@ const diff = (schema: Schema, schemaNew: Schema) => {
     }
 
     return schemaDiff
+}
+
+const createItem = () => {
+    const schemaItem: SchemaItem = {
+        id: uuid4(),
+        key: Date.now() + "",
+        type: "string",
+        default: "str_value",
+    }
+    return schemaItem
 }
 
 const createRow = (schema: Schema) => {
@@ -141,9 +155,7 @@ const processValue = (schema: Schema, key: string, value: unknown) => {
             if (typeof value === "number") {
                 return processValueNumber(schemaItem, value)
             }
-            console.warn(
-                `Unhandled type: ${typeof value}, for: ${schemaItem.type}`
-            )
+            console.warn(`Unhandled type: ${typeof value}, for: ${schemaItem.type}`)
             return 0
         }
 
@@ -154,9 +166,7 @@ const processValue = (schema: Schema, key: string, value: unknown) => {
             if (typeof value === "boolean") {
                 return processValueBoolean(schemaItem, value)
             }
-            console.warn(
-                `Unhandled type: ${typeof value}, for: ${schemaItem.type}`
-            )
+            console.warn(`Unhandled type: ${typeof value}, for: ${schemaItem.type}`)
             return 0
         }
 
@@ -164,9 +174,7 @@ const processValue = (schema: Schema, key: string, value: unknown) => {
             if (typeof value === "string") {
                 return processValueString(schemaItem, value)
             }
-            console.warn(
-                `Unhandled type: ${typeof value}, for: ${schemaItem.type}`
-            )
+            console.warn(`Unhandled type: ${typeof value}, for: ${schemaItem.type}`)
             return ""
         }
 
@@ -181,9 +189,7 @@ const processValue = (schema: Schema, key: string, value: unknown) => {
             if (typeof value === "string") {
                 return processValueUUID(schemaItem, value)
             }
-            console.warn(
-                `Unhandled type: ${typeof value}, for: ${schemaItem.type}`
-            )
+            console.warn(`Unhandled type: ${typeof value}, for: ${schemaItem.type}`)
             return uuid4()
         }
     }
@@ -222,9 +228,11 @@ export default {
     load,
     unload,
     set,
+    get,
     remove,
-    edit,
+    clone,
     diff,
+    createItem,
     createRow,
     createValue,
     processValue,

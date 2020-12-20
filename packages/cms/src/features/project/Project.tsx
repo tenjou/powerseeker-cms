@@ -1,26 +1,30 @@
 import React, { useEffect } from "react"
 import { useSelector } from "react-redux"
-import { RouteComponentProps } from "react-router-dom"
+import type { RouteComponentProps } from "react-router-dom"
 import styled from "styled-components"
-import { RootState } from "../../app/RootReducer"
+import type { RootState } from "../../app/RootReducer"
 import { Centered } from "../../components/Common"
 import NavBar from "../../components/NavBar"
 import CacheService from "../cache/CacheService"
-import SchemaEdit from "../schema/SchemaEdit"
+import Export from "../export/Export"
 import LeftPanel from "./LeftPanel"
+import type { ProjectAction, ProjectAssetAction } from "./ProjectService"
 import ProjectService from "./ProjectService"
 import ViewContainer from "./ViewContainer"
 
 type TProjectParams = {
     projectId: string
+    actionType?: ProjectAction
     assetId?: string | undefined
+    assetActionType?: ProjectAssetAction
 }
-export default function Project({
-    match,
-}: RouteComponentProps<TProjectParams>) {
+export default function Project({ match }: RouteComponentProps<TProjectParams>) {
     const project = useSelector((state: RootState) => state.project)
     const schemas = useSelector((state: RootState) => state.schemas)
+
+    const actionType = match.params.actionType || ""
     const assetId = match.params.assetId || ""
+    const assetActionType = match.params.assetActionType || ""
 
     useEffect(() => {
         ProjectService.load(match.params.projectId)
@@ -35,23 +39,25 @@ export default function Project({
         return <Centered>Loading</Centered>
     }
 
-    return (
-        <>
+    if (actionType === "export") {
+        return (
             <Vertical>
                 <NavBar project={project} />
                 <Horizontal>
-                    <LeftPanel assets={project.data} />
-                    <ViewContainer
-                        assets={project.data}
-                        assetId={assetId}
-                        schemas={schemas}
-                    />
+                    <Export project={project} />
                 </Horizontal>
             </Vertical>
-            <Overlay>
-                <SchemaEdit />
-            </Overlay>
-        </>
+        )
+    }
+
+    return (
+        <Vertical>
+            <NavBar project={project} />
+            <Horizontal>
+                <LeftPanel assets={project.data} />
+                <ViewContainer assets={project.data} assetId={assetId} schemas={schemas} assetActionType={assetActionType} />
+            </Horizontal>
+        </Vertical>
     )
 }
 
@@ -65,6 +71,7 @@ const Horizontal = styled.div`
     display: flex;
     flex-direction: row;
     flex: 1;
+    overflow: auto;
 `
 
 const Overlay = styled.div`

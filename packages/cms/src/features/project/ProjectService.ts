@@ -7,6 +7,10 @@ import SchemaService from "../schema/SchemaService"
 import { SchemaDiff } from "../schema/Types"
 import ProjectStore from "./ProjectStore"
 
+export type ProjectAction = "asset" | "export"
+
+export type ProjectAssetAction = "edit"
+
 const load = (projectId: string) => {
     const saveFile = PersistenceService.load(projectId)
     if (!saveFile) {
@@ -167,6 +171,19 @@ const updateSchema = (schemaDiff: SchemaDiff) => {
     PersistenceService.updated()
 }
 
+const createPath = (assetId: string | null = null, assetActionType: ProjectAssetAction | "" = "") => {
+    const projectId = store.getState().project?.meta.id || ""
+
+    let path = `/project/${projectId}`
+    if (assetId) {
+        path += `/asset/${assetId}`
+    }
+    if (assetActionType) {
+        path += `/${assetActionType}`
+    }
+    return path
+}
+
 export default {
     load,
     unload,
@@ -176,4 +193,5 @@ export default {
     removeRow,
     editRow,
     updateSchema,
+    createPath,
 }

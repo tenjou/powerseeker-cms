@@ -1,21 +1,14 @@
 import styled from "styled-components"
-import { AssetItem, ProjectAsset, ProjectAssets } from "../../Types"
 import { Centered } from "../../components/Common"
 import Editable from "../../components/Editable"
+import { AssetItem, ProjectAsset, ProjectAssets } from "../../Types"
 import SchemaService from "../schema/SchemaService"
-import { Schemas, Schema, SchemaItem } from "../schema/Types"
-import ProjectService from "./ProjectService"
+import { Schema, SchemaItem, Schemas } from "../schema/Types"
+import history from "./../../app/History"
+import SchemaEdit from "./../schema/SchemaEdit"
+import ProjectService, { ProjectAssetAction } from "./ProjectService"
 
-const ViewContainerBody = styled.div`
-    flex: 1;
-    background-color: #fff;
-`
-
-type OnEntryChangeFunc = (
-    index: number,
-    key: string,
-    value: string | boolean
-) => void
+type OnEntryChangeFunc = (index: number, key: string, value: string | boolean) => void
 
 type SheetProps = {
     schema: Schema
@@ -39,19 +32,10 @@ const Sheet = ({ schema, data, onEntryRemove, onEntryChange }: SheetProps) => {
                 {data.map((assetItem, index) => (
                     <tr key={index}>
                         {schema.map((schemaItem) => (
-                            <td key={schemaItem.key}>
-                                {renderCell(
-                                    schemaItem,
-                                    assetItem,
-                                    onEntryChange,
-                                    index
-                                )}
-                            </td>
+                            <td key={schemaItem.key}>{renderCell(schemaItem, assetItem, onEntryChange, index)}</td>
                         ))}
                         <td>
-                            <button onClick={() => onEntryRemove(index)}>
-                                Remove
-                            </button>
+                            <button onClick={() => onEntryRemove(index)}>Remove</button>
                         </td>
                     </tr>
                 ))}
@@ -60,93 +44,13 @@ const Sheet = ({ schema, data, onEntryRemove, onEntryChange }: SheetProps) => {
     )
 }
 
-const renderCell = (
-    schemaItem: SchemaItem,
-    assetItem: AssetItem,
-    onEntryChange: OnEntryChangeFunc,
-    index: number
-) => {
-    switch (schemaItem.type) {
-        case "number":
-            return (
-                <input
-                    type="number"
-                    value={assetItem[schemaItem.key as keyof ProjectAsset] + ""}
-                    min={schemaItem.min}
-                    max={schemaItem.max}
-                    onChange={(event) =>
-                        onEntryChange(
-                            index,
-                            schemaItem.key,
-                            event.currentTarget.value
-                        )
-                    }
-                />
-            )
-
-        case "boolean":
-            return (
-                <input
-                    type="checkbox"
-                    checked={!!assetItem[schemaItem.key as keyof ProjectAsset]}
-                    onChange={(event) =>
-                        onEntryChange(
-                            index,
-                            schemaItem.key,
-                            event.currentTarget.checked
-                        )
-                    }
-                />
-            )
-
-        case "string":
-            return (
-                <Editable
-                    value={assetItem[schemaItem.key as keyof ProjectAsset] + ""}
-                    onChange={(value) =>
-                        onEntryChange(index, schemaItem.key, value)
-                    }
-                />
-            )
-
-        case "enum":
-            return (
-                <select
-                    value={assetItem[schemaItem.key as keyof ProjectAsset] + ""}
-                    onChange={(event) =>
-                        onEntryChange(
-                            index,
-                            schemaItem.key,
-                            event.currentTarget.value
-                        )
-                    }
-                >
-                    {schemaItem.values.map((value, index) => (
-                        <option key={index} value={value}>
-                            {value}
-                        </option>
-                    ))}
-                </select>
-            )
-
-        case "uuid":
-            return (
-                <div>
-                    {assetItem[schemaItem.key as keyof ProjectAsset] + ""}
-                </div>
-            )
-
-        default:
-            return null
-    }
-}
-
 type ViewContainerProps = {
     assets: ProjectAssets
     assetId: string
     schemas: Schemas
+    assetActionType: ProjectAssetAction | ""
 }
-const ViewContainer = ({ assets, assetId, schemas }: ViewContainerProps) => {
+const ViewContainer = ({ assets, assetId, schemas, assetActionType }: ViewContainerProps) => {
     const asset = assets[assetId]
     const schema = schemas[assetId]
 
@@ -159,21 +63,14 @@ const ViewContainer = ({ assets, assetId, schemas }: ViewContainerProps) => {
         ProjectService.removeRow(index)
     }
 
-    const handleChange = (
-        index: number,
-        key: string,
-        value: string | boolean
-    ) => {
+    const handleChange = (index: number, key: string, value: string | boolean) => {
         const processedValue = SchemaService.processValue(schema, key, value)
         ProjectService.editRow(index, key, processedValue)
     }
 
-    const handleSchemaItem = () => {
-        const schemaDiff = SchemaService.edit(assetId)
-        if (!schemaDiff) {
-            return
-        }
-        ProjectService.updateSchema(schemaDiff)
+    const handleEdit = () => {
+        const path = ProjectService.createPath(assetId, "edit")
+        history.push(path)
     }
 
     if (!asset) {
@@ -184,18 +81,83 @@ const ViewContainer = ({ assets, assetId, schemas }: ViewContainerProps) => {
         )
     }
 
+    if (assetActionType && assetActionType === "edit") {
+        return (
+            <ViewContainerBody>
+                <SchemaEdit assetId={assetId} />
+            </ViewContainerBody>
+        )
+    }
+
     return (
         <ViewContainerBody>
-            <button onClick={handleAdd}>Add</button>
-            <button onClick={handleSchemaItem}>Edit </button>
-            <Sheet
-                schema={schema}
-                data={asset.data}
-                onEntryRemove={handleRemove}
-                onEntryChange={handleChange}
-            />
+            <Toolbar>
+                <button onClick={handleAdd}>Add</button>
+                <button onClick={handleEdit}>Edit </button>
+            </Toolbar>
+
+            <Sheet schema={schema} data={asset.data} onEntryRemove={handleRemove} onEntryChange={handleChange} />
         </ViewContainerBody>
     )
+}
+
+const ViewContainerBody = styled.div`
+    flex: 1;
+    background-color: #fff;
+`
+
+const Toolbar = styled.div``
+
+const renderCell = (schemaItem: SchemaItem, assetItem: AssetItem, onEntryChange: OnEntryChangeFunc, index: number) => {
+    switch (schemaItem.type) {
+        case "number":
+            return (
+                <input
+                    type="number"
+                    value={assetItem[schemaItem.key as keyof ProjectAsset] + ""}
+                    min={schemaItem.min}
+                    max={schemaItem.max}
+                    onChange={(event) => onEntryChange(index, schemaItem.key, event.currentTarget.value)}
+                />
+            )
+
+        case "boolean":
+            return (
+                <input
+                    type="checkbox"
+                    checked={!!assetItem[schemaItem.key as keyof ProjectAsset]}
+                    onChange={(event) => onEntryChange(index, schemaItem.key, event.currentTarget.checked)}
+                />
+            )
+
+        case "string":
+            return (
+                <Editable
+                    value={assetItem[schemaItem.key as keyof ProjectAsset] + ""}
+                    onChange={(value) => onEntryChange(index, schemaItem.key, value)}
+                />
+            )
+
+        case "enum":
+            return (
+                <select
+                    value={assetItem[schemaItem.key as keyof ProjectAsset] + ""}
+                    onChange={(event) => onEntryChange(index, schemaItem.key, event.currentTarget.value)}
+                >
+                    {schemaItem.values.map((value, index) => (
+                        <option key={index} value={value}>
+                            {value}
+                        </option>
+                    ))}
+                </select>
+            )
+
+        case "uuid":
+            return <div>{assetItem[schemaItem.key as keyof ProjectAsset] + ""}</div>
+
+        default:
+            return null
+    }
 }
 
 export default ViewContainer

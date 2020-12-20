@@ -11,7 +11,7 @@ const Page404 = () => {
 const App = () => {
     return (
         <Switch>
-            <Route path="/project/:projectId/:assetId?" component={Project} />
+            <Route path="/project/:projectId/:actionType?/:assetId?/:assetActionType?" component={Project} />
             <Route path="/export" component={Export} />
             <Route path="/404" component={Page404} />
             <Route path="/" exact={true} component={Projects} />

@@ -73,9 +73,7 @@ const ProjectStore = createSlice({
             for (let n = 0; n < diff.added.length; n++) {
                 const schemaItem = diff.added[n]
                 for (let m = 0; m < asset.data.length; m++) {
-                    asset.data[m][schemaItem.key] = SchemaService.createValue(
-                        schemaItem
-                    )
+                    asset.data[m][schemaItem.key] = SchemaService.createValue(schemaItem)
                 }
             }
 
@@ -83,6 +81,15 @@ const ProjectStore = createSlice({
                 const schemaItem = diff.removed[n]
                 for (let m = 0; m < asset.data.length; m++) {
                     delete asset.data[m][schemaItem.key]
+                }
+            }
+
+            for (let prevKey in diff.renamed) {
+                const newKey = diff.renamed[prevKey]
+                for (let m = 0; m < asset.data.length; m++) {
+                    const value = asset.data[m][prevKey]
+                    asset.data[m][newKey] = value
+                    delete asset.data[m][prevKey]
                 }
             }
         },
