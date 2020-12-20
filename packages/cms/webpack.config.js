@@ -22,11 +22,12 @@ module.exports = {
         rules: [
             {
                 test: /\.tsx?$/,
-                use: ["ts-loader"],
-            },
-            {
-                test: /\.jsx?$/,
-                use: ["babel-loader"],
+                loader: "awesome-typescript-loader",
+                options: {
+                    reportFiles: ["src/**/*.{ts,tsx}"],
+                    forceIsolatedModules: true,
+                    getCustomTransformers: path.join(__dirname, "./webpack.ts-transformers.js"),
+                },
             },
             {
                 test: /\.html/,
