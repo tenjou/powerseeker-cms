@@ -19,7 +19,7 @@ const selectAsset = (assetId: string) => {
     }
 
     store.dispatch(CacheStore.selectAsset(assetId))
-    history.push(`/project/${project.meta.id}/asset/${assetId}/edit`)
+    history.push(`/project/${project.meta.id}/asset/${assetId}`)
 }
 
 export default { selectAsset }

@@ -1,5 +1,5 @@
 import styled from "styled-components"
-import type { AssetItem, Project, ProjectAsset, ProjectAssetTransformed } from "../../Types"
+import type { AssetItem, Project, ProjectAsset } from "../../Types"
 import { Schema, Schemas } from "../schema/Types"
 
 interface ExportProps {
@@ -7,18 +7,18 @@ interface ExportProps {
     schemas: Schemas
 }
 const Export = ({ project, schemas }: ExportProps) => {
-    const dataTransformed: Record<string, ProjectAssetTransformed> = {}
+    const dataTransformed: Record<string, Record<string, AssetItem>> = {}
     for (let assetId in project.data) {
         const asset = project.data[assetId]
         const schema = schemas[assetId]
-        const transformedAsset = transformAsset(asset, schema)
-        if (!transformedAsset) {
+        const transformedAssetData = transformAssetData(asset, schema)
+        if (!transformedAssetData) {
             continue
         }
-        dataTransformed[asset.meta.name] = transformedAsset
+        dataTransformed[asset.meta.name] = transformedAssetData
     }
 
-    const projectTransformed = { meta: project.meta, data: dataTransformed }
+    const projectTransformed = dataTransformed
     const output = JSON.stringify(projectTransformed, null, 4)
 
     return (
@@ -39,17 +39,13 @@ const findUID = (schema: Schema): string | null => {
     return null
 }
 
-const transformAsset = (asset: ProjectAsset, schema: Schema) => {
+const transformAssetData = (asset: ProjectAsset, schema: Schema) => {
     const uidKey = findUID(schema)
     if (!uidKey) {
         return null
     }
 
     const transformedData: Record<string, AssetItem> = {}
-    const transformedAsset: ProjectAssetTransformed = {
-        meta: asset.meta,
-        data: transformedData,
-    }
 
     for (let n = 0; n < asset.data.length; n++) {
         const entry = asset.data[n]
@@ -57,7 +53,7 @@ const transformAsset = (asset: ProjectAsset, schema: Schema) => {
         transformedData[entryUID] = entry
     }
 
-    return transformedAsset
+    return transformedData
 }
 
 const ExportContainer = styled.div`
