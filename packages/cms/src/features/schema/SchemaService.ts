@@ -5,15 +5,16 @@ import { uuid4 } from "../../Utils"
 import SchemaStore from "./SchemaStore"
 import {
     Schema,
-    SchemaType,
     SchemaDiff,
     SchemaItem,
     SchemaItemBoolean,
     SchemaItemEnum,
     SchemaItemNumber,
     SchemaItemString,
+    SchemaItemUID,
     SchemaItemUUID,
     Schemas,
+    SchemaType,
 } from "./Types"
 
 const load = (schemas: Schemas) => {
@@ -121,6 +122,14 @@ const createItem = (type: SchemaType | null = null, prev: SchemaItem | null = nu
                 type,
             }
 
+        case "uid":
+            return {
+                id,
+                key,
+                type,
+                default: "uid" + Date.now(),
+            }
+
         case "string":
             return {
                 id,
@@ -152,6 +161,7 @@ const createItem = (type: SchemaType | null = null, prev: SchemaItem | null = nu
                 id,
                 key,
                 type,
+                default: "",
                 values: [],
             }
 
@@ -186,6 +196,8 @@ const createValue = (schemaItem: SchemaItem) => {
             return processValueBoolean(schemaItem, schemaItem.default)
         case "enum":
             return processValueEnum(schemaItem, "")
+        case "uid":
+            return processValueUID(schemaItem, schemaItem.default)
         case "uuid":
             return processValueUUID(schemaItem, uuid4())
     }
@@ -236,6 +248,14 @@ const processValue = (schema: Schema, key: string, value: unknown) => {
             return value
         }
 
+        case "uid": {
+            if (typeof value === "string") {
+                return processValueUID(schemaItem, value)
+            }
+            console.warn(`Unhandled type: ${typeof value}, for: ${schemaItem.type}`)
+            return schemaItem.default + Date.now()
+        }
+
         case "uuid": {
             if (typeof value === "string") {
                 return processValueUUID(schemaItem, value)
@@ -268,6 +288,10 @@ const processValueEnum = (schemaItem: SchemaItemEnum, value: string) => {
     if (schemaItem.values.indexOf(value) === -1) {
         return schemaItem.values[0] || ""
     }
+    return value
+}
+
+const processValueUID = (schemaItem: SchemaItemUID, value: string) => {
     return value
 }
 

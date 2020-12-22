@@ -1,6 +1,10 @@
 export interface SchemaItemUUID {
     type: "uuid"
 }
+export interface SchemaItemUID {
+    type: "uid"
+    default: string
+}
 export interface SchemaItemString {
     type: "string"
     default: string
@@ -21,13 +25,13 @@ export interface SchemaItemEnum {
     default: string
 }
 
-export type SchemaItemType = SchemaItemUUID | SchemaItemString | SchemaItemNumber | SchemaItemBoolean | SchemaItemEnum
+export type SchemaItemType = SchemaItemUUID | SchemaItemUID | SchemaItemString | SchemaItemNumber | SchemaItemBoolean | SchemaItemEnum
 
 export type SchemaItem = { id: string; key: string } & SchemaItemType
 
 export type SchemaType = SchemaItemType["type"]
 
-export const SchemaTypes: SchemaType[] = ["boolean", "enum", "number", "string", "uuid"]
+export const SchemaTypes: SchemaType[] = ["boolean", "enum", "number", "string", "uuid", "uid"]
 
 export type Schema = SchemaItem[]
 

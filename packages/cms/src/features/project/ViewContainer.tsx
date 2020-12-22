@@ -152,6 +152,14 @@ const renderCell = (schemaItem: SchemaItem, assetItem: AssetItem, onEntryChange:
                 </select>
             )
 
+        case "uid":
+            return (
+                <Editable
+                    value={assetItem[schemaItem.key as keyof ProjectAsset] + ""}
+                    onChange={(value) => onEntryChange(index, schemaItem.key, value)}
+                />
+            )
+
         case "uuid":
             return <div>{assetItem[schemaItem.key as keyof ProjectAsset] + ""}</div>
 

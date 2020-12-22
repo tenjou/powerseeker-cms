@@ -51,7 +51,7 @@ const SchemaEdit = ({ assetId }: SchemaEditProps) => {
         setCurrentSchema(schemaNew)
     }
 
-    const handleKeyChange = (index: number, id: string, value: string) => {
+    const handleKeyChange = (index: number, id: string, value: unknown) => {
         const prevItem = currentSchema[index]
 
         const newSchema = [...currentSchema]
@@ -120,7 +120,7 @@ const SchemaEdit = ({ assetId }: SchemaEditProps) => {
                                     <SettingBoolean index={index} id="default" value={schemaItem.default} onChange={handleKeyChange} />
                                 </Extension>
                             )}
-                            {schemaItem.type === "string" && (
+                            {(schemaItem.type === "string" || schemaItem.type === "uid") && (
                                 <Extension>
                                     <SettingString index={index} id="default" value={schemaItem.default} onChange={handleKeyChange} />
                                 </Extension>
@@ -165,7 +165,7 @@ interface SettingBooleanProps {
     index: number
     id: string
     value: boolean
-    onChange: (index: number, id: string, value: string) => void
+    onChange: (index: number, id: string, value: boolean) => void
 }
 const SettingBoolean = ({ index, id, value, onChange }: SettingBooleanProps) => {
     return (

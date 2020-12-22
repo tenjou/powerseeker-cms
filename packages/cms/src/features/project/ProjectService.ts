@@ -70,6 +70,7 @@ const createAsset = () => {
             id: uuid4(),
             key: "type",
             type: "enum",
+            default: "item_1",
             values: ["item_1", "item_2", "item_3"],
         },
         {
