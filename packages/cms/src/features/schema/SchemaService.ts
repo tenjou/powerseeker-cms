@@ -5,6 +5,7 @@ import { uuid4 } from "../../Utils"
 import SchemaStore from "./SchemaStore"
 import {
     Schema,
+    SchemaType,
     SchemaDiff,
     SchemaItem,
     SchemaItemBoolean,
@@ -76,7 +77,7 @@ const diff = (schema: Schema, schemaNew: Schema) => {
     const schemaDiff: SchemaDiff = {
         added: [],
         removed: [],
-        changed: {},
+        changed: [],
         renamed: {},
         schema: schemaNew,
     }
@@ -86,7 +87,7 @@ const diff = (schema: Schema, schemaNew: Schema) => {
         const itemPrev = schema.find((entry) => entry.id === item.id)
         if (itemPrev) {
             if (item.type !== itemPrev.type) {
-                schemaDiff.changed[item.id] = item
+                schemaDiff.changed.push(item)
             }
             if (item.key !== itemPrev.key) {
                 schemaDiff.renamed[itemPrev.key] = item.key
@@ -108,14 +109,60 @@ const diff = (schema: Schema, schemaNew: Schema) => {
     return schemaDiff
 }
 
-const createItem = () => {
-    const schemaItem: SchemaItem = {
-        id: uuid4(),
-        key: Date.now() + "",
-        type: "string",
-        default: "str_value",
+const createItem = (type: SchemaType | null = null, prev: SchemaItem | null = null): SchemaItem => {
+    const id = prev ? prev.id : uuid4()
+    const key = prev ? prev.key : Date.now() + ""
+
+    switch (type) {
+        case "uuid":
+            return {
+                id,
+                key,
+                type,
+            }
+
+        case "string":
+            return {
+                id,
+                key,
+                type,
+                default: "str_value",
+            }
+
+        case "number":
+            return {
+                id,
+                key,
+                type,
+                min: Number.MIN_SAFE_INTEGER,
+                max: Number.MAX_SAFE_INTEGER,
+                default: 0,
+            }
+
+        case "boolean":
+            return {
+                id,
+                key,
+                type,
+                default: false,
+            }
+
+        case "enum":
+            return {
+                id,
+                key,
+                type,
+                values: [],
+            }
+
+        default:
+            return {
+                id,
+                key,
+                type: "string",
+                default: "str_value",
+            }
     }
-    return schemaItem
 }
 
 const createRow = (schema: Schema) => {
@@ -135,6 +182,10 @@ const createValue = (schemaItem: SchemaItem) => {
             return processValueNumber(schemaItem, schemaItem.default)
         case "string":
             return processValueString(schemaItem, schemaItem.default)
+        case "boolean":
+            return processValueBoolean(schemaItem, schemaItem.default)
+        case "enum":
+            return processValueEnum(schemaItem, "")
         case "uuid":
             return processValueUUID(schemaItem, uuid4())
     }

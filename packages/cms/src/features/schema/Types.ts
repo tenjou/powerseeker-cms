@@ -18,6 +18,7 @@ export interface SchemaItemBoolean {
 export interface SchemaItemEnum {
     type: "enum"
     values: string[]
+    default: string
 }
 
 export type SchemaItemType = SchemaItemUUID | SchemaItemString | SchemaItemNumber | SchemaItemBoolean | SchemaItemEnum
@@ -35,7 +36,7 @@ export type Schemas = Record<string, Schema>
 export type SchemaDiff = {
     added: SchemaItem[]
     removed: SchemaItem[]
-    changed: Record<string, SchemaItem>
+    changed: SchemaItem[]
     renamed: Record<string, string>
     schema: Schema
 }
