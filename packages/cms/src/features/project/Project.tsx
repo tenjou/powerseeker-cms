@@ -44,7 +44,7 @@ export default function Project({ match }: RouteComponentProps<TProjectParams>) 
             <Vertical>
                 <NavBar project={project} />
                 <Horizontal>
-                    <Export project={project} />
+                    <Export project={project} schemas={schemas} />
                 </Horizontal>
             </Vertical>
         )

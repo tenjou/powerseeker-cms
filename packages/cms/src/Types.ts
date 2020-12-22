@@ -12,6 +12,16 @@ export type ProjectAsset = {
     data: AssetItem[]
 }
 
+export type ProjectAssetTransformed = {
+    meta: {
+        id: string
+        name: string
+        createdAt: number
+        updatedAt: number
+    }
+    data: Record<string, AssetItem>
+}
+
 export type ProjectAssets = Record<string, ProjectAsset>
 
 export type ProjectMeta = {
