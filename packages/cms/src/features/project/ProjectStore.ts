@@ -3,24 +3,31 @@ import { ProjectAsset, AssetItem, Project } from "../../Types"
 import SchemaService from "../schema/SchemaService"
 import { SchemaDiff } from "../schema/Types"
 
-type AssetItemIndex = {
+interface AssetItemIndex {
     assetId: string
     index: number
 }
 
-type AddAssetItem = {
+interface AssetItemValue {
     assetId: string
-    data: AssetItem
-}
-
-type AssetItemValue = AssetItemIndex & {
+    index: number
     key: string
     value: unknown
 }
 
-type AssetSchemaInput = {
+interface AddAssetItem {
+    assetId: string
+    data: AssetItem
+}
+
+interface AssetSchemaInput {
     assetId: string
     schemaDiff: SchemaDiff
+}
+
+interface AssetRenameInput {
+    assetId: string
+    name: string
 }
 
 type ProjectState = Project | null
@@ -51,6 +58,13 @@ const ProjectStore = createSlice({
                 return
             }
             delete state.data[action.payload]
+        },
+
+        renameAsset(state, action: PayloadAction<AssetRenameInput>) {
+            if (!state) {
+                return
+            }
+            state.data[action.payload.assetId].meta.name = action.payload.name
         },
 
         addRow(state, action: PayloadAction<AddAssetItem>) {

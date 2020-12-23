@@ -102,6 +102,24 @@ const removeAsset = (assetId: string) => {
     PersistenceService.updated()
 }
 
+const renameAsset = (assetId: string, name: string) => {
+    const project = store.getState().project
+    if (!project) {
+        console.warn(`No project has been loaded`)
+        return
+    }
+
+    const asset = project.data[assetId]
+    if (!asset) {
+        console.warn(`No such asset has been created with Id: ${assetId}`)
+        return
+    }
+
+    store.dispatch(ProjectStore.renameAsset({ assetId, name }))
+
+    PersistenceService.updated()
+}
+
 const addRow = (data: AssetItem) => {
     const assetId = store.getState().cache.selectedAssetId
     if (!assetId) {
@@ -190,6 +208,7 @@ export default {
     unload,
     createAsset,
     removeAsset,
+    renameAsset,
     addRow,
     removeRow,
     editRow,
